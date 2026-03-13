@@ -1,20 +1,30 @@
-from fastapi import APIRouter, Depends, Response
-from sqlalchemy import select, func
+from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps.auth_deps import require_roles
 from app.db.postgres import get_db
-from app.models.commission_model import Commission
-from app.models.order_model import Order, OrderStatus, ReturnStatus
-from app.models.seller_model import Seller
 from app.models.user_model import User
 from app.schemas.admin_schema import ReturnDecision, SellerApproval, UserBlock
-from app.services.order_service import get_order_items_map
-from app.services.admin_service import block_user, decide_return, decide_seller, refund_order
+from app.services.admin_service import (
+    block_user,
+    decide_return,
+    decide_seller,
+    export_orders_report_csv,
+    get_revenue_analytics,
+    list_orders_with_items,
+    list_pending_returns,
+    list_refund_queue,
+    list_sellers_with_users,
+    list_users_overview,
+    refund_order,
+    update_seller_commission_config,
+)
 from app.utils.rate_limiter import RateLimiter
 
 admin_rate_limit = RateLimiter(limit=50, window_seconds=60, key_prefix="admin")
-router = APIRouter(prefix="/admin", dependencies=[Depends(admin_rate_limit)], tags=["admin"])
+router = APIRouter(
+    prefix="/admin", dependencies=[Depends(admin_rate_limit)], tags=["admin"]
+)
 
 
 @router.patch("/users/{user_id}")
@@ -35,7 +45,10 @@ async def seller_decision(
     admin: User = Depends(require_roles("admin")),
 ):
     return await decide_seller(
-        db=db, seller_id=seller_id, approved=data.approved, commission_percent=data.commission_percent
+        db=db,
+        seller_id=seller_id,
+        approved=data.approved,
+        commission_percent=data.commission_percent,
     )
 
 
@@ -63,33 +76,7 @@ async def list_sellers(
     db: AsyncSession = Depends(get_db),
     admin: User = Depends(require_roles("admin")),
 ):
-    result = await db.execute(select(Seller).order_by(Seller.created_at.desc()))
-    sellers = result.scalars().all()
-    user_ids = [s.user_id for s in sellers]
-    user_map = {}
-    if user_ids:
-        user_result = await db.execute(select(User).where(User.id.in_(user_ids)))
-        user_map = {user.id: user for user in user_result.scalars().all()}
-    data = []
-    for seller in sellers:
-        user = user_map.get(seller.user_id)
-        data.append(
-            {
-                "id": seller.id,
-                "store_name": seller.store_name,
-                "commission_percent": seller.commission_percent,
-                "is_approved": seller.approved,
-                "user": {
-                    "id": user.id,
-                    "name": user.name,
-                    "email": user.email,
-                    "is_blocked": user.is_blocked,
-                }
-                if user
-                else None,
-            }
-        )
-    return data
+    return await list_sellers_with_users(db=db)
 
 
 @router.get("/orders")
@@ -97,29 +84,7 @@ async def list_orders(
     db: AsyncSession = Depends(get_db),
     admin: User = Depends(require_roles("admin")),
 ):
-    result = await db.execute(select(Order).order_by(Order.created_at.desc()))
-    orders = result.scalars().all()
-    items_map = await get_order_items_map(db, [order.id for order in orders])
-    data = []
-    for order in orders:
-        items = items_map.get(order.id, [])
-        data.append(
-            {
-                "id": order.id,
-                "status": order.status.value,
-                "total_amount": float(order.total_amount),
-                "items": [
-                    {
-                        "product_id": i.product_id,
-                        "quantity": i.quantity,
-                        "price": float(i.price),
-                    }
-                    for i in items
-                ],
-                "created_at": order.created_at.isoformat() if order.created_at else None,
-            }
-        )
-    return data
+    return await list_orders_with_items(db=db)
 
 
 @router.get("/users")
@@ -127,21 +92,7 @@ async def list_users(
     db: AsyncSession = Depends(get_db),
     admin: User = Depends(require_roles("admin")),
 ):
-    result = await db.execute(select(User).order_by(User.created_at.desc()))
-    users = result.scalars().all()
-    return [
-        {
-            "id": u.id,
-            "name": u.name,
-            "email": u.email,
-            "phone": u.phone,
-            "role": u.role.value if hasattr(u.role, "value") else str(u.role),
-            "wallet_balance": u.wallet_balance,
-            "is_blocked": u.is_blocked,
-            "created_at": u.created_at.isoformat() if u.created_at else None,
-        }
-        for u in users
-    ]
+    return await list_users_overview(db=db)
 
 
 @router.get("/returns")
@@ -149,19 +100,7 @@ async def pending_returns(
     db: AsyncSession = Depends(get_db),
     admin: User = Depends(require_roles("admin")),
 ):
-    result = await db.execute(
-        select(Order).where(Order.return_status == ReturnStatus.requested).order_by(Order.created_at.desc())
-    )
-    rows = result.scalars().all()
-    return [
-        {
-            "id": r.id,
-            "status": r.status.value,
-            "return_status": r.return_status.value,
-            "total_amount": float(r.total_amount),
-        }
-        for r in rows
-    ]
+    return await list_pending_returns(db=db)
 
 
 @router.get("/refunds")
@@ -169,19 +108,7 @@ async def refund_queue(
     db: AsyncSession = Depends(get_db),
     admin: User = Depends(require_roles("admin")),
 ):
-    result = await db.execute(
-        select(Order).where(Order.return_status.in_([ReturnStatus.approved, ReturnStatus.picked]))
-    )
-    rows = result.scalars().all()
-    return [
-        {
-            "id": r.id,
-            "status": r.status.value,
-            "return_status": r.return_status.value,
-            "total_amount": float(r.total_amount),
-        }
-        for r in rows
-    ]
+    return await list_refund_queue(db=db)
 
 
 @router.patch("/commission/config")
@@ -191,12 +118,11 @@ async def update_commission_config(
     db: AsyncSession = Depends(get_db),
     admin: User = Depends(require_roles("admin")),
 ):
-    seller = await db.get(Seller, seller_id)
-    if not seller:
-        return {"updated": False, "reason": "seller not found"}
-    seller.commission_percent = commission_percent
-    await db.commit()
-    return {"updated": True, "seller_id": seller_id, "commission_percent": commission_percent}
+    return await update_seller_commission_config(
+        db=db,
+        seller_id=seller_id,
+        commission_percent=commission_percent,
+    )
 
 
 @router.get("/analytics/revenue")
@@ -204,34 +130,7 @@ async def revenue_analytics(
     db: AsyncSession = Depends(get_db),
     admin: User = Depends(require_roles("admin")),
 ):
-    metrics = await db.execute(
-        select(
-            select(func.count(Seller.id)).scalar_subquery().label("total_sellers"),
-            select(func.count(User.id)).where(User.is_blocked.is_(False)).scalar_subquery().label("active_users"),
-            select(func.count(Order.id)).scalar_subquery().label("total_orders"),
-            select(func.count(Order.id))
-            .where(Order.status == OrderStatus.delivered)
-            .scalar_subquery()
-            .label("delivered_orders"),
-            select(func.coalesce(func.sum(Order.total_amount), 0))
-            .where(Order.status != OrderStatus.cancelled)
-            .scalar_subquery()
-            .label("gross_revenue"),
-            select(func.coalesce(func.sum(Commission.commission_amount), 0))
-            .scalar_subquery()
-            .label("platform_commission"),
-        )
-    )
-    row = metrics.one()
-    return {
-        "total_sellers": int(row.total_sellers or 0),
-        "active_users": int(row.active_users or 0),
-        "total_orders": int(row.total_orders or 0),
-        "delivered_orders": int(row.delivered_orders or 0),
-        "gross_revenue": int(row.gross_revenue or 0),
-        "total_revenue": int(row.gross_revenue or 0),
-        "platform_commission": int(row.platform_commission or 0),
-    }
+    return await get_revenue_analytics(db=db)
 
 
 @router.get("/reports/export")
@@ -239,10 +138,4 @@ async def export_report(
     db: AsyncSession = Depends(get_db),
     admin: User = Depends(require_roles("admin")),
 ):
-    result = await db.execute(select(Order).order_by(Order.created_at.desc()))
-    orders = result.scalars().all()
-    lines = ["id,status,total_amount,created_at"]
-    for o in orders:
-        lines.append(f"{o.id},{o.status.value},{o.total_amount},{o.created_at.isoformat() if o.created_at else ''}")
-    csv_data = "\n".join(lines)
-    return Response(content=csv_data, media_type="text/csv")
+    return await export_orders_report_csv(db=db)

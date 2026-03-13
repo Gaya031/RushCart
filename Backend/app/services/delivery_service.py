@@ -7,7 +7,7 @@ from app.models.delivery_model import Delivery, DeliveryStatus
 from app.models.order_model import Order, OrderStatus
 from app.models.notification_model import NotificationType
 from app.models.seller_model import Seller
-from app.models.user_model import User
+from app.models.user_model import User, UserRole
 from app.core.exceptions import NotFoundException, ConflictException, PermissionDeniedException
 from app.services.notification_service import create_notification
 from app.utils.email_handler import send_email_background
@@ -381,3 +381,121 @@ async def get_order_tracking(db: AsyncSession, order_id: int) -> dict | None:
         "history": history,
     }
 
+
+def serialize_delivery(delivery: Delivery) -> dict:
+    return {
+        "id": delivery.id,
+        "order_id": delivery.order_id,
+        "partner_id": delivery.partner_id,
+        "status": delivery.status.value,
+        "distance_km": delivery.distance_km,
+        "delivery_fee": delivery.delivery_fee,
+        "partner_earning": delivery.partner_earning,
+        "created_at": delivery.created_at.isoformat() if delivery.created_at else None,
+    }
+
+
+def attach_route_context(delivery_payload: dict, context: dict | None) -> dict:
+    if not context:
+        return delivery_payload
+    payload = dict(delivery_payload)
+    payload["pickup"] = context.get("pickup")
+    payload["drop"] = context.get("drop")
+    return payload
+
+
+async def get_available_deliveries_feed(db: AsyncSession, partner_id: int) -> list[dict]:
+    rows = await get_partner_deliveries(db=db, partner_id=partner_id)
+    rows = [row for row in rows if row.status != DeliveryStatus.delivered]
+
+    payload = []
+    for row in rows:
+        base = serialize_delivery(row)
+        try:
+            context = await get_delivery_route_context(db=db, delivery_id=row.id, partner_id=partner_id)
+        except Exception:
+            context = None
+        payload.append(attach_route_context(base, context))
+
+    open_orders = await list_open_orders_for_delivery(db=db, partner_id=partner_id)
+    return payload + open_orders
+
+
+async def get_assigned_deliveries_feed(
+    db: AsyncSession,
+    *,
+    partner_id: int,
+    include_delivered: bool = False,
+) -> list[dict]:
+    rows = await get_partner_deliveries(db=db, partner_id=partner_id)
+    if not include_delivered:
+        rows = [row for row in rows if row.status != DeliveryStatus.delivered]
+
+    payload = []
+    for row in rows:
+        base = serialize_delivery(row)
+        try:
+            context = await get_delivery_route_context(db=db, delivery_id=row.id, partner_id=partner_id)
+        except Exception:
+            context = None
+        payload.append(attach_route_context(base, context))
+    return payload
+
+
+async def claim_delivery_with_context(db: AsyncSession, *, order_id: int, partner_id: int) -> dict:
+    row = await claim_delivery_for_partner(db=db, order_id=order_id, partner_id=partner_id)
+    base = serialize_delivery(row)
+    try:
+        context = await get_delivery_route_context(db=db, delivery_id=row.id, partner_id=partner_id)
+    except Exception:
+        context = None
+    return attach_route_context(base, context)
+
+
+def parse_tracking_payload(payload: dict) -> dict:
+    delivery_id = payload.get("delivery_id")
+    lat = payload.get("lat")
+    lng = payload.get("lng")
+    if delivery_id is None or lat is None or lng is None:
+        raise ConflictException("delivery_id, lat and lng are required")
+    try:
+        return {
+            "delivery_id": int(delivery_id),
+            "order_id": int(payload["order_id"]) if payload.get("order_id") is not None else None,
+            "lat": float(lat),
+            "lng": float(lng),
+            "heading": float(payload["heading"]) if payload.get("heading") is not None else None,
+            "speed": float(payload["speed"]) if payload.get("speed") is not None else None,
+            "status": str(payload.get("status")) if payload.get("status") is not None else None,
+        }
+    except ValueError as exc:
+        raise ConflictException("Invalid numeric payload values") from exc
+
+
+async def get_tracking_for_order_access_checked(
+    db: AsyncSession, *, order_id: int, current_user: User
+) -> dict:
+    order = await db.get(Order, order_id)
+    if not order:
+        raise NotFoundException("Order not found")
+
+    if current_user.role == UserRole.buyer and order.buyer_id != current_user.id:
+        raise PermissionDeniedException("Not allowed to view this tracking")
+
+    if current_user.role == UserRole.delivery:
+        partner_delivery = await db.execute(
+            select(Order.id).where(Order.id == order_id, Order.delivery_partner_id == current_user.id)
+        )
+        if partner_delivery.scalar() is None:
+            raise PermissionDeniedException("Not allowed to view this tracking")
+
+    if current_user.role == UserRole.seller:
+        seller_id_result = await db.execute(select(Seller.id).where(Seller.user_id == current_user.id))
+        seller_id = seller_id_result.scalar()
+        if not seller_id or seller_id != order.seller_id:
+            raise PermissionDeniedException("Not allowed to view this tracking")
+
+    tracking = await get_order_tracking(db=db, order_id=order_id)
+    if not tracking:
+        raise NotFoundException("Tracking not found")
+    return tracking

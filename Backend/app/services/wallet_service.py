@@ -32,4 +32,15 @@ async def debit_wallet(db: AsyncSession, user_id: int, amount: int, txn_type: st
     )
     db.add(txn)
     await db.commit()
-    
+
+
+async def get_wallet_snapshot(db: AsyncSession, user: User) -> dict:
+    txns = await db.execute(
+        select(WalletTransaction)
+        .where(WalletTransaction.user_id == user.id)
+        .order_by(WalletTransaction.created_at.desc())
+    )
+    return {
+        "balance": user.wallet_balance,
+        "transactions": txns.scalars().all(),
+    }

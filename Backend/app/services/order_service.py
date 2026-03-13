@@ -4,11 +4,17 @@ from sqlalchemy import case, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.exceptions import ConflictException, NotFoundException, PermissionDeniedException
+from app.models.notification_model import NotificationType
 from app.models.order_item_model import OrderItem
 from app.models.order_model import Order, OrderStatus, PaymentMethod, ReturnStatus
 from app.models.payment_model import Payment, PaymentStatus
 from app.models.product_model import Product
+from app.models.user_model import User
+from app.services.notification_service import create_notification
 from app.services.payment_service import initiate_refund
+from app.utils.email_handler import send_email_background
+from app.utils.email_templates import order_created_email, order_status_email
+from app.utils.simple_cache import cache_get, cache_set
 from app.utils.simple_cache import cache_delete_prefix
 
 logger = logging.getLogger(__name__)
@@ -201,3 +207,134 @@ async def get_order_items_map(db: AsyncSession, order_ids: list[int]) -> dict[in
     for item in items:
         items_map.setdefault(item.order_id, []).append(item)
     return items_map
+
+
+def serialize_order_payload(order: Order, items: list[OrderItem]) -> dict:
+    return {
+        "id": order.id,
+        "status": order.status.value,
+        "can_cancel": can_cancel_order(order.status),
+        "total_amount": float(order.total_amount),
+        "payment_method": order.payment_method.value,
+        "address": order.address,
+        "return_status": order.return_status.value if order.return_status else None,
+        "created_at": order.created_at.isoformat() if order.created_at else None,
+        "items": [
+            {
+                "product_id": item.product_id,
+                "quantity": item.quantity,
+                "price": float(item.price),
+            }
+            for item in items
+        ],
+    }
+
+
+async def place_order_and_notify(db: AsyncSession, user: User, payload) -> dict:
+    order = await create_order(db=db, buyer_id=user.id, payload=payload)
+    await cache_delete_prefix(f"orders:buyer:{user.id}:")
+    await create_notification(
+        db=db,
+        user_id=user.id,
+        data={
+            "title": f"Order #{order.id} placed",
+            "message": "Your order has been placed successfully.",
+            "type": NotificationType.order,
+            "link": f"/buyer/order/{order.id}/tracking",
+        },
+    )
+    subject, body = order_created_email(user.name, order.id, int(order.total_amount))
+    send_email_background(user.email, subject, body)
+    return {
+        "order_id": order.id,
+        "status": order.status.value,
+        "total_amount": float(order.total_amount),
+    }
+
+
+async def get_buyer_orders_payload(
+    db: AsyncSession,
+    *,
+    user_id: int,
+    page: int,
+    size: int,
+    include_items: bool,
+) -> list[dict]:
+    cache_key = f"orders:buyer:{user_id}:list:p{page}:s{size}:items{int(include_items)}"
+    cached = await cache_get(cache_key)
+    if cached is not None:
+        return cached
+
+    offset = (page - 1) * size
+    orders = await list_buyer_orders(db, user_id, offset=offset, limit=size)
+    items_map = {}
+    if include_items:
+        items_map = await get_order_items_map(db, [order.id for order in orders])
+    payload = [serialize_order_payload(order, items_map.get(order.id, [])) for order in orders]
+    await cache_set(cache_key, payload, ttl_seconds=20)
+    return payload
+
+
+async def get_buyer_order_summary_payload(db: AsyncSession, user_id: int) -> dict:
+    cache_key = f"orders:buyer:{user_id}:summary"
+    cached = await cache_get(cache_key)
+    if cached is not None:
+        return cached
+
+    payload = await get_buyer_order_summary(db, user_id)
+    await cache_set(cache_key, payload, ttl_seconds=20)
+    return payload
+
+
+async def get_buyer_order_detail_payload(db: AsyncSession, *, order_id: int, user_id: int) -> dict:
+    cache_key = f"orders:buyer:{user_id}:detail:{order_id}"
+    cached = await cache_get(cache_key)
+    if cached is not None:
+        return cached
+
+    order = await get_order_for_user(db, order_id, user_id)
+    items_map = await get_order_items_map(db, [order.id])
+    payload = serialize_order_payload(order, items_map.get(order.id, []))
+    await cache_set(cache_key, payload, ttl_seconds=20)
+    return payload
+
+
+async def cancel_order_and_notify(db: AsyncSession, *, order_id: int, user: User) -> dict:
+    order, refund_status = await cancel_order(db, order_id, user.id)
+    await cache_delete_prefix(f"orders:buyer:{user.id}:")
+    await create_notification(
+        db=db,
+        user_id=user.id,
+        data={
+            "title": f"Order #{order.id} cancelled",
+            "message": "Your order has been cancelled.",
+            "type": NotificationType.order,
+            "link": "/buyer/orders",
+        },
+    )
+    subject, body = order_status_email(user.name, order.id, order.status.value)
+    send_email_background(user.email, subject, body)
+    return {"id": order.id, "status": order.status.value, "refund_status": refund_status}
+
+
+async def request_return_and_notify(
+    db: AsyncSession,
+    *,
+    order_id: int,
+    user: User,
+    reason: str,
+    image: str | None,
+) -> dict:
+    order = await request_return(db, order_id, user.id, reason, image)
+    await cache_delete_prefix(f"orders:buyer:{user.id}:")
+    await create_notification(
+        db=db,
+        user_id=user.id,
+        data={
+            "title": f"Return requested for order #{order.id}",
+            "message": "Your return request was submitted successfully.",
+            "type": NotificationType.order,
+            "link": f"/buyer/order/{order.id}",
+        },
+    )
+    return {"id": order.id, "return_status": order.return_status.value}

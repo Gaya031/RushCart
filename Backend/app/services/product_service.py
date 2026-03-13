@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import or_, select
 from datetime import datetime, timezone
 from app.models.product_model import Product
 from app.models.seller_model import Seller
@@ -171,3 +171,28 @@ async def get_featured_products(db: AsyncSession, limit: int = 10):
     )
     products = result.scalars().all()
     return products
+
+
+async def get_my_products(db: AsyncSession, user_id: int) -> list[Product]:
+    result = await db.execute(select(Seller).where(Seller.user_id == user_id))
+    seller_profile = result.scalars().first()
+    if not seller_profile:
+        return []
+    rows = await db.execute(select(Product).where(Product.seller_id == seller_profile.id))
+    return rows.scalars().all()
+
+
+async def search_products_by_query(db: AsyncSession, q: str) -> list[Product]:
+    result = await db.execute(
+        select(Product).where(
+            or_(Product.title.ilike(f"%{q}%"), Product.description.ilike(f"%{q}%"))
+        )
+    )
+    return result.scalars().all()
+
+
+async def get_product_or_404(db: AsyncSession, product_id: int) -> Product:
+    product = await db.get(Product, product_id)
+    if not product:
+        raise NotFoundException("Product not found")
+    return product

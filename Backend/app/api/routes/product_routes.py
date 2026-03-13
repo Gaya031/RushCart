@@ -1,23 +1,22 @@
 from fastapi import APIRouter, Depends, File, Query, Request, UploadFile, status
-from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps.auth_deps import require_roles
-from app.core.exceptions import NotFoundException
 from app.db.postgres import get_db
-from app.models.product_model import Product
-from app.models.seller_model import Seller
 from app.models.user_model import User
 from app.schemas.product_schema import ProductCreate, ProductOut, ProductUpdate, StockUpdate
 from app.services.product_service import (
     create_product,
+    get_my_products,
+    get_product_or_404,
     delete_product,
     get_featured_products,
     get_products,
+    search_products_by_query,
     update_product,
     update_stock,
 )
-from app.utils.file_upload import upload_file
+from app.services.upload_service import upload_public_file
 
 router = APIRouter(tags=["products"])
 
@@ -28,9 +27,7 @@ async def upload_product_image(
     file: UploadFile = File(...),
     _seller: User = Depends(require_roles("seller")),
 ):
-    image_path = await upload_file(file=file, sub_dir="products")
-    base_url = str(request.base_url).rstrip("/")
-    return {"url": f"{base_url}{image_path}", "path": image_path}
+    return await upload_public_file(request=request, file=file, sub_dir="products")
 
 
 @router.post("/", response_model=ProductOut, status_code=status.HTTP_201_CREATED)
@@ -92,12 +89,7 @@ async def my_products(
     db: AsyncSession = Depends(get_db),
     seller: User = Depends(require_roles("seller")),
 ):
-    seller_result = await db.execute(select(Seller).where(Seller.user_id == seller.id))
-    seller_profile = seller_result.scalars().first()
-    if not seller_profile:
-        return []
-    result = await db.execute(select(Product).where(Product.seller_id == seller_profile.id))
-    return result.scalars().all()
+    return await get_my_products(db=db, user_id=seller.id)
 
 
 @router.get("/featured", response_model=list[ProductOut])
@@ -110,17 +102,9 @@ async def search_products(
     q: str = Query(..., min_length=1, max_length=120),
     db: AsyncSession = Depends(get_db),
 ):
-    result = await db.execute(
-        select(Product).where(
-            or_(Product.title.ilike(f"%{q}%"), Product.description.ilike(f"%{q}%"))
-        )
-    )
-    return result.scalars().all()
+    return await search_products_by_query(db=db, q=q)
 
 
 @router.get("/{product_id}", response_model=ProductOut)
 async def get_product(product_id: int, db: AsyncSession = Depends(get_db)):
-    product = await db.get(Product, product_id)
-    if not product:
-        raise NotFoundException("Product not found")
-    return product
+    return await get_product_or_404(db=db, product_id=product_id)

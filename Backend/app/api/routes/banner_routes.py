@@ -6,7 +6,7 @@ from app.db.postgres import get_db
 from app.models.user_model import User
 from app.schemas.banner_schema import BannerCreate, BannerOut, BannerUpdate
 from app.services.banner_service import create_banner, delete_banner, list_active_banners, list_all_banners, update_banner
-from app.utils.file_upload import upload_file
+from app.services.upload_service import upload_public_file
 
 router = APIRouter(prefix="/banners", tags=["banners"])
 
@@ -63,6 +63,4 @@ async def upload_banner_image(
     file: UploadFile = File(...),
     admin: User = Depends(require_roles("admin")),
 ):
-    image_path = await upload_file(file=file, sub_dir="banners")
-    base_url = str(request.base_url).rstrip("/")
-    return {"url": f"{base_url}{image_path}", "path": image_path}
+    return await upload_public_file(request=request, file=file, sub_dir="banners")
