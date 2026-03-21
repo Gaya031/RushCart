@@ -3,44 +3,41 @@ import { Button } from "@/components/ui/button"
 
 const StoreHeader = ({ store }) => {
   return (
-    <div className="bg-white border-b">
-      {/* Banner */}
-      <div className="relative h-56 bg-gray-200">
-        <img src={store.cover_image || "/store-banner.jpg"}
+    <div className="border-b border-white/10 bg-[#0b0b0b]">
+      <div className="relative h-64 md:h-72">
+        <img
+          src={store.cover_image || "/store-banner.jpg"}
           alt={store.store_name}
-          className="w-full h-full object-cover" />
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
       </div>
 
-      {/* Store info */}
-      <div className="max-w-7xl mx-auto px-4 py-6 flex gap-6">
-        {/* logo */}
-        <div className="w-20 h-20 bg-white rounded-xl shadow flex items-center justify-center">
-          <img src={store.logo || "/store-logo.png"}
-            alt="logo"
-            className="w-12 h-12"
-          />
+      <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row gap-6 items-start md:items-center">
+        <div className="w-20 h-20 bg-white/10 rounded-2xl border border-white/10 flex items-center justify-center">
+          <img src={store.logo || "/store-logo.png"} alt="logo" className="w-12 h-12" />
         </div>
 
-        {/* Meta */}
         <div className="flex-1">
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold">{store.store_name}</h1>
-            {store.approved && <Badge>Open Now</Badge>}
+            <h1 className="font-display text-3xl text-white">{store.store_name}</h1>
+            {store.approved && <Badge className="bg-amber-300 text-black">Open Now</Badge>}
           </div>
 
-          <p className="text-sm text-gray-600 mt-1">
-            ⭐ {store.average_rating} ({store.total_reviews} reviews)
+          <p className="text-sm text-white/60 mt-2">
+            {Number(store.average_rating || 0).toFixed(1)} rating • {store.total_reviews || 0} reviews
           </p>
 
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-white/60 mt-2">
             {store.description}
           </p>
         </div>
 
-        {/* Actions */}
         <div className="flex gap-3">
-          <Button variant="outline">♡ Follow</Button>
-          <Button>Contact Seller</Button>
+          <Button variant="outline" className="border-white/20 text-white hover:bg-white/10">
+            Follow
+          </Button>
+          <Button className="bg-amber-300 text-black hover:bg-amber-200">Contact Seller</Button>
         </div>
       </div>
     </div>

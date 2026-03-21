@@ -11,16 +11,16 @@ const FreeDeliveryProgress = () => {
   const percent = Math.min((total / FREE_DELIVERY_THRESHOLD) * 100, 100);
 
   return (
-    <div className="bg-green-50 p-4 rounded-xl">
-      <p className="text-sm mb-2">
+    <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+      <p className="text-sm text-white/70 mb-2">
         {remaining > 0
           ? `Spend ₹${remaining} more for free delivery`
-          : "You have unlocked free delivery 🎉"}
+          : "You have unlocked free delivery"}
       </p>
 
-      <div className="w-full bg-green-100 h-2 rounded">
+      <div className="w-full bg-white/10 h-2 rounded">
         <div
-          className="bg-green-500 h-2 rounded"
+          className="bg-amber-300 h-2 rounded"
           style={{ width: `${percent}%` }}
         />
       </div>

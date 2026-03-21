@@ -41,17 +41,40 @@ const navByRole = {
   ],
 };
 
+const roleTheme = {
+  buyer: {
+    accentText: "text-amber-200",
+    accentBorder: "border-amber-300/50",
+  },
+  seller: {
+    accentText: "text-emerald-200",
+    accentBorder: "border-emerald-300/50",
+  },
+  admin: {
+    accentText: "text-violet-200",
+    accentBorder: "border-violet-300/50",
+  },
+  delivery: {
+    accentText: "text-sky-200",
+    accentBorder: "border-sky-300/50",
+  },
+};
+
 export default function RoleDashboardLayout({ role, title, children }) {
   const location = useLocation();
   const links = navByRole[role] || [];
+  const theme = roleTheme[role] || roleTheme.buyer;
+  const activeClass = `bg-white/10 text-white border-l-2 ${theme.accentBorder}`;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen rc-shell">
       <Navbar />
-      <div className="max-w-7xl mx-auto px-4 py-6 grid grid-cols-12 gap-6">
+      <div className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-12 gap-6">
         <aside className="col-span-12 lg:col-span-3">
-          <div className="bg-white rounded-xl shadow p-4 sticky top-24">
-            <h2 className="font-semibold mb-3 capitalize">{role} Panel</h2>
+          <div className="rounded-2xl p-4 sticky top-24 border border-white/10 bg-white/5">
+            <h2 className={`font-semibold mb-3 capitalize text-white ${theme.accentText}`}>
+              {role} Panel
+            </h2>
             <div className="space-y-1">
               {links.map(([to, label]) => {
                 const active = location.pathname === to || location.pathname.startsWith(`${to}/`);
@@ -59,8 +82,10 @@ export default function RoleDashboardLayout({ role, title, children }) {
                   <Link
                     key={to}
                     to={to}
-                    className={`block px-3 py-2 rounded-lg text-sm ${
-                      active ? "bg-green-100 text-green-700 font-medium" : "hover:bg-gray-100 text-gray-700"
+                    className={`block px-3 py-2 rounded-lg text-sm transition ${
+                      active
+                        ? `${activeClass} font-medium`
+                        : "text-white/60 hover:bg-white/5"
                     }`}
                   >
                     {label}
@@ -71,7 +96,7 @@ export default function RoleDashboardLayout({ role, title, children }) {
           </div>
         </aside>
         <main className="col-span-12 lg:col-span-9">
-          {title && <h1 className="text-2xl font-bold mb-4">{title}</h1>}
+          {title && <h1 className="text-2xl font-bold mb-4 text-white">{title}</h1>}
           {children}
         </main>
       </div>

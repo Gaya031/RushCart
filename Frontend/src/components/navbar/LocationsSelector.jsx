@@ -3,10 +3,11 @@ import { MapPin } from "lucide-react";
 import { useLocationStore } from "../../store/location.store";
 import { pushToast } from "../../store/toast.store";
 
-export default function LocationSelector() {
+export default function LocationSelector({ variant = "light" }) {
   const { location, address, city, state, pincode, latitude, longitude, fetchLocation } = useLocationStore();
   const [showModal, setShowModal] = useState(false);
   const [detecting, setDetecting] = useState(false);
+  const isDark = variant === "dark";
   const [formData, setFormData] = useState({
     address: "",
     city: "",
@@ -112,7 +113,9 @@ export default function LocationSelector() {
   return (
     <>
       <div 
-        className="text-sm text-gray-600 cursor-pointer hover:text-gray-900 flex items-center gap-1"
+        className={`text-sm cursor-pointer flex items-center gap-1 ${
+          isDark ? "text-white/70 hover:text-white" : "text-gray-600 hover:text-gray-900"
+        }`}
         onClick={openModal}
       >
         <MapPin className="w-4 h-4" />
@@ -126,13 +129,17 @@ export default function LocationSelector() {
 
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+          <div className={`rounded-2xl p-6 w-full max-w-md ${isDark ? "bg-[#121212] text-white border border-white/10" : "bg-white"}`}>
             <h2 className="text-xl font-bold mb-4">Update Delivery Location</h2>
             <button
               type="button"
               onClick={handleUseCurrentLocation}
               disabled={detecting}
-              className="w-full mb-4 px-4 py-2 border border-green-600 text-green-700 rounded-lg hover:bg-green-50 disabled:opacity-60"
+              className={`w-full mb-4 px-4 py-2 rounded-lg disabled:opacity-60 ${
+                isDark
+                  ? "border border-amber-300/60 text-amber-200 hover:bg-amber-300/10"
+                  : "border border-green-600 text-green-700 hover:bg-green-50"
+              }`}
             >
               {detecting ? "Detecting live location..." : "Use Live Location"}
             </button>
@@ -143,7 +150,7 @@ export default function LocationSelector() {
                   type="text"
                   value={formData.address}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-lg"
+                  className={`w-full px-3 py-2 rounded-lg ${isDark ? "bg-white/5 border border-white/10 text-white" : "border"}`}
                   placeholder="Enter your address"
                   required
                 />
@@ -155,7 +162,7 @@ export default function LocationSelector() {
                     type="text"
                     value={formData.city}
                     onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg"
+                    className={`w-full px-3 py-2 rounded-lg ${isDark ? "bg-white/5 border border-white/10 text-white" : "border"}`}
                     required
                   />
                 </div>
@@ -165,7 +172,7 @@ export default function LocationSelector() {
                     type="text"
                     value={formData.state}
                     onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg"
+                    className={`w-full px-3 py-2 rounded-lg ${isDark ? "bg-white/5 border border-white/10 text-white" : "border"}`}
                   />
                 </div>
               </div>
@@ -176,7 +183,7 @@ export default function LocationSelector() {
                     type="text"
                     value={formData.pincode}
                     onChange={(e) => setFormData({ ...formData, pincode: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg"
+                    className={`w-full px-3 py-2 rounded-lg ${isDark ? "bg-white/5 border border-white/10 text-white" : "border"}`}
                   />
                 </div>
                 <div>
@@ -185,7 +192,7 @@ export default function LocationSelector() {
                     type="text"
                     value={formData.latitude}
                     onChange={(e) => setFormData({ ...formData, latitude: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg"
+                    className={`w-full px-3 py-2 rounded-lg ${isDark ? "bg-white/5 border border-white/10 text-white" : "border"}`}
                     placeholder="e.g., 28.6292"
                   />
                 </div>
@@ -196,7 +203,7 @@ export default function LocationSelector() {
                   type="text"
                   value={formData.longitude}
                   onChange={(e) => setFormData({ ...formData, longitude: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-lg"
+                  className={`w-full px-3 py-2 rounded-lg ${isDark ? "bg-white/5 border border-white/10 text-white" : "border"}`}
                   placeholder="e.g., 77.3725"
                 />
               </div>
@@ -204,13 +211,13 @@ export default function LocationSelector() {
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="flex-1 px-4 py-2 border rounded-lg hover:bg-gray-50"
+                  className={`flex-1 px-4 py-2 rounded-lg ${isDark ? "border border-white/10 hover:bg-white/5" : "border hover:bg-gray-50"}`}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                  className={`flex-1 px-4 py-2 rounded-lg ${isDark ? "bg-amber-300 text-black hover:bg-amber-200" : "bg-green-600 text-white hover:bg-green-700"}`}
                 >
                   Save Location
                 </button>

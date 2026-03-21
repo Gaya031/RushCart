@@ -126,49 +126,53 @@ const OrderSummary = ({ address, paymentMethod, deliveryMode, deliverySlot }) =>
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl sticky top-28">
-      <h3 className="font-semibold mb-4">Your Order</h3>
+    <div className="rounded-2xl border border-white/10 bg-white/5 p-6 sticky top-28">
+      <h3 className="font-semibold text-white mb-4">Your Order</h3>
 
-      <div className="space-y-3 text-sm">
-        {items.map(i => (
+      <div className="space-y-3 text-sm text-white/70">
+        {items.map((i) => (
           <div key={i.productId} className="flex justify-between">
             <span>{i.title} × {i.quantity}</span>
-            <span>₹{i.price * i.quantity}</span>
+            <span className="text-white">₹{i.price * i.quantity}</span>
           </div>
         ))}
       </div>
 
-      <hr className="my-4" />
+      <hr className="my-4 border-white/10" />
 
-      <div className="text-sm space-y-2">
+      <div className="text-sm space-y-2 text-white/70">
         <div className="flex justify-between">
           <span>Item Total</span>
-          <span>₹{subtotal}</span>
+          <span className="text-white">₹{subtotal}</span>
         </div>
         <div className="flex justify-between">
           <span>Delivery Fee</span>
-          <span className="text-green-600">FREE</span>
+          <span className="text-amber-200">Free</span>
         </div>
         <div className="flex justify-between">
           <span>Platform Fee</span>
-          <span>₹{PLATFORM_FEE}</span>
+          <span className="text-white">₹{PLATFORM_FEE}</span>
         </div>
         <div className="flex justify-between">
           <span>Taxes</span>
-          <span>₹{TAX}</span>
+          <span className="text-white">₹{TAX}</span>
         </div>
       </div>
 
-      <div className="flex justify-between font-bold text-lg mt-4">
+      <div className="flex justify-between font-bold text-lg mt-4 text-white">
         <span>To Pay</span>
-        <span className="text-green-600">₹{total}</span>
+        <span className="text-amber-200">₹{total}</span>
       </div>
 
-      <Button className="w-full mt-6" onClick={placeOrder} disabled={!items.length || !storeId}>
+      <Button
+        className="w-full mt-6 bg-amber-300 text-black hover:bg-amber-200"
+        onClick={placeOrder}
+        disabled={!items.length || !storeId}
+      >
         Place Order ₹{total}
       </Button>
 
-      <p className="text-xs text-center text-gray-500 mt-2">
+      <p className="text-xs text-center text-white/50 mt-2">
         Secure payments by Razorpay
       </p>
     </div>

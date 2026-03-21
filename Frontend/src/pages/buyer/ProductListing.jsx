@@ -70,18 +70,25 @@ export default function ProductListing() {
   }, [offersOnly, query]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen rc-shell">
       <Navbar />
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-6">{title}</h1>
-        {error && <p className="text-sm text-red-600 mb-3">{error}</p>}
+      <div className="max-w-7xl mx-auto px-6 py-12">
+        <div className="flex items-end justify-between gap-6 mb-8">
+          <div>
+            <h1 className="font-display text-3xl text-white">{title}</h1>
+            <p className="text-sm text-white/60 mt-2">
+              Browse curated items from nearby stores and fast-moving sellers.
+            </p>
+          </div>
+        </div>
+        {error && <p className="text-sm text-red-300 mb-3">{error}</p>}
 
         {loading ? (
-          <p>Loading products...</p>
+          <p className="text-white/60">Loading products...</p>
         ) : products.length === 0 ? (
-          <p className="text-gray-600">No products found.</p>
+          <p className="text-white/60">No products found.</p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {products.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}

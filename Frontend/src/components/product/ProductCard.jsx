@@ -19,19 +19,28 @@ export default function ProductCard({ product }) {
   };
   
   return (
-    <Link to={`/product/${product.id}`} className="block bg-white p-3 rounded-xl hover:shadow-md transition-shadow">
-      <img src={imageSrc} alt={productTitle} className="w-full h-40 object-cover rounded-lg" />
+    <Link
+      to={`/product/${product.id}`}
+      className="group block rounded-2xl border border-white/10 bg-white/5 p-3 transition-transform duration-300 hover:-translate-y-1 hover:bg-white/10"
+    >
+      <div className="relative overflow-hidden rounded-xl bg-black/30">
+        <img
+          src={imageSrc}
+          alt={productTitle}
+          className="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+      </div>
 
-      <h4 className="text-sm font-medium mt-2 line-clamp-2">{productTitle}</h4>
+      <h4 className="text-sm font-medium mt-3 line-clamp-2 text-white">{productTitle}</h4>
 
-      <p className="text-green-600 font-semibold">₹{product.price}</p>
+      <p className="text-amber-300 font-semibold mt-1">₹{product.price}</p>
 
       <Button
         size="sm"
-        className="mt-2 w-full"
+        className="mt-3 w-full bg-amber-300 text-black hover:bg-amber-200"
         onClick={handleAddToCart}
       >
-        + Add
+        Add to cart
       </Button>
     </Link>
   );

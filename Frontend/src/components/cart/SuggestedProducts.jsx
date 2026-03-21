@@ -27,9 +27,16 @@ const mockProducts = [
 const SuggestedProducts = () => {
   return (
     <div className="mt-12">
-      <h3 className="font-semibold mb-4">Suggested for you</h3>
+      <h3 className="font-display text-2xl text-white mb-4">Suggested for you</h3>
 
-      <Swiper slidesPerView={5} spaceBetween={16}>
+      <Swiper
+        slidesPerView={1.4}
+        spaceBetween={16}
+        breakpoints={{
+          640: { slidesPerView: 2.2 },
+          1024: { slidesPerView: 4 },
+        }}
+      >
         {mockProducts.map(p => (
           <SwiperSlide key={p.id}>
             <ProductCard product={p} />

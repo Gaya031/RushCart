@@ -8,12 +8,12 @@ export default function ProfileVariant1() {
   useEffect(() => {
     getStoreDetails(storeId).then((res) => setStore(res.data));
   }, [storeId]);
-  if (!store) return <p className="p-6">Loading...</p>;
+  if (!store) return <p className="p-6 text-white/60">Loading...</p>;
   return (
-    <div className="p-6 bg-white rounded-xl shadow">
-      <h2 className="text-xl font-bold">{store.store_name}</h2>
-      <p className="text-gray-600">{store.description}</p>
-      <p className="mt-2 text-sm">City: {store.city}</p>
+    <div className="p-6 rounded-2xl border border-white/10 bg-white/5">
+      <h2 className="text-xl font-bold text-white">{store.store_name}</h2>
+      <p className="text-white/70">{store.description}</p>
+      <p className="mt-2 text-sm text-white/60">City: {store.city}</p>
     </div>
   );
 }

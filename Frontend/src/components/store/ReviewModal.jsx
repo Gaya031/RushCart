@@ -38,7 +38,7 @@ export default function ReviewModal({ open, onClose, productId, onSubmitted }) {
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-      <div className="bg-white rounded-xl w-full max-w-md p-5">
+      <div className="bg-[#121212] border border-white/10 rounded-2xl w-full max-w-md p-5 text-white">
         <h3 className="text-lg font-semibold mb-4">Write a Review</h3>
         <form onSubmit={submit} className="space-y-4">
           <div>
@@ -46,7 +46,7 @@ export default function ReviewModal({ open, onClose, productId, onSubmitted }) {
             <select
               value={rating}
               onChange={(e) => setRating(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
+              className="w-full border border-white/10 rounded-lg px-3 py-2 bg-white/5 text-white"
             >
               {[5, 4, 3, 2, 1].map((r) => (
                 <option key={r} value={r}>
@@ -60,14 +60,14 @@ export default function ReviewModal({ open, onClose, productId, onSubmitted }) {
             <textarea
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2 min-h-[110px]"
+              className="w-full border border-white/10 rounded-lg px-3 py-2 min-h-[110px] bg-white/5 text-white"
               placeholder="Share your experience..."
             />
           </div>
           <div className="flex gap-3 pt-2">
             <button
               type="button"
-              className="flex-1 border rounded-lg py-2 hover:bg-gray-50"
+              className="flex-1 border border-white/10 rounded-lg py-2 hover:bg-white/5"
               onClick={onClose}
               disabled={loading}
             >
@@ -75,7 +75,7 @@ export default function ReviewModal({ open, onClose, productId, onSubmitted }) {
             </button>
             <button
               type="submit"
-              className="flex-1 bg-green-600 text-white rounded-lg py-2 disabled:opacity-60"
+              className="flex-1 bg-amber-300 text-black rounded-lg py-2 disabled:opacity-60"
               disabled={loading}
             >
               {loading ? "Submitting..." : "Submit"}

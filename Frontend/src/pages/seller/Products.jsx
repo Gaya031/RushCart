@@ -140,7 +140,7 @@ export default function SellerProducts() {
     return (
       <RoleDashboardLayout role="seller" title="My Products">
         <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-300"></div>
         </div>
       </RoleDashboardLayout>
     );
@@ -149,7 +149,7 @@ export default function SellerProducts() {
   return (
     <RoleDashboardLayout role="seller" title="My Products">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold">My Products</h1>
+          <h1 className="font-display text-3xl text-white">My Products</h1>
           <button 
             onClick={() => {
               setEditingProduct(null);
@@ -157,57 +157,57 @@ export default function SellerProducts() {
               setFormData({ title: "", description: "", price: "", stock: "", category: "", imageUrl: "" });
               setShowModal(true);
             }}
-            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2"
+            className="bg-emerald-300 text-black px-4 py-2 rounded-lg hover:bg-emerald-200 flex items-center gap-2"
           >
             <Plus className="w-4 h-4" /> Add Product
           </button>
         </div>
-        {message && <p className="text-sm text-red-600 mb-3">{message}</p>}
+        {message && <p className="text-sm text-red-300 mb-3">{message}</p>}
 
         {products.length === 0 ? (
-          <div className="bg-white rounded-lg shadow p-8 text-center">
-            <Package className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-            <h2 className="text-xl font-semibold mb-2">No products yet</h2>
-            <p className="text-gray-500 mb-4">Add your first product to start selling!</p>
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-8 text-center">
+            <Package className="w-16 h-16 mx-auto text-white/30 mb-4" />
+            <h2 className="text-xl font-semibold mb-2 text-white">No products yet</h2>
+            <p className="text-white/60 mb-4">Add your first product to start selling.</p>
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow overflow-hidden">
+          <div className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden">
             <table className="w-full">
-              <thead className="bg-gray-50">
+              <thead className="bg-white/5">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Product</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Price</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Stock</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-white/60 uppercase">Product</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-white/60 uppercase">Price</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-white/60 uppercase">Stock</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-white/60 uppercase">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-white/10">
                 {products.map((product) => (
-                  <tr key={product.id} className="hover:bg-gray-50">
+                  <tr key={product.id} className="hover:bg-white/5">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         {product.images?.[0] && (
                           <img src={product.images[0]} alt={product.title} className="w-12 h-12 object-cover rounded" />
                         )}
                         <div>
-                          <p className="font-medium">{product.title}</p>
-                          <p className="text-sm text-gray-500">{product.category}</p>
+                          <p className="font-medium text-white">{product.title}</p>
+                          <p className="text-sm text-white/50">{product.category}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">₹{product.price}</td>
+                    <td className="px-6 py-4 text-white">₹{product.price}</td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
                         <button 
                           onClick={() => handleStockUpdate(product.id, Math.max(0, product.stock - 1))}
-                          className="w-8 h-8 rounded bg-gray-100 hover:bg-gray-200"
+                          className="w-8 h-8 rounded bg-white/10 text-white hover:bg-white/20"
                         >
                           -
                         </button>
-                        <span className="w-12 text-center">{product.stock}</span>
+                        <span className="w-12 text-center text-white">{product.stock}</span>
                         <button 
                           onClick={() => handleStockUpdate(product.id, product.stock + 1)}
-                          className="w-8 h-8 rounded bg-gray-100 hover:bg-gray-200"
+                          className="w-8 h-8 rounded bg-white/10 text-white hover:bg-white/20"
                         >
                           +
                         </button>
@@ -217,13 +217,13 @@ export default function SellerProducts() {
                       <div className="flex items-center gap-3">
                         <button
                           onClick={() => handleEdit(product)}
-                          className="text-blue-600 hover:text-blue-800"
+                          className="text-emerald-200 hover:text-emerald-100"
                         >
                           <Edit className="w-5 h-5" />
                         </button>
                         <button
                           onClick={() => handleDelete(product.id)}
-                          className="text-red-600 hover:text-red-800"
+                          className="text-red-300 hover:text-red-200"
                         >
                           <Trash2 className="w-5 h-5" />
                         </button>
@@ -240,7 +240,7 @@ export default function SellerProducts() {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+          <div className="bg-[#121212] border border-white/10 rounded-2xl p-6 w-full max-w-md text-white">
             <h2 className="text-xl font-bold mb-4">
               {editingProduct ? "Edit Product" : "Add New Product"}
             </h2>
@@ -251,7 +251,7 @@ export default function SellerProducts() {
                   type="text"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-lg"
+                  className="w-full px-3 py-2 border border-white/10 rounded-lg bg-white/5 text-white"
                   required
                 />
               </div>
@@ -260,7 +260,7 @@ export default function SellerProducts() {
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-lg"
+                  className="w-full px-3 py-2 border border-white/10 rounded-lg bg-white/5 text-white"
                   rows={3}
                 />
               </div>
@@ -271,7 +271,7 @@ export default function SellerProducts() {
                     type="number"
                     value={formData.price}
                     onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg"
+                    className="w-full px-3 py-2 border border-white/10 rounded-lg bg-white/5 text-white"
                     required
                   />
                 </div>
@@ -281,7 +281,7 @@ export default function SellerProducts() {
                     type="number"
                     value={formData.stock}
                     onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg"
+                    className="w-full px-3 py-2 border border-white/10 rounded-lg bg-white/5 text-white"
                     required
                   />
                 </div>
@@ -292,7 +292,7 @@ export default function SellerProducts() {
                   type="text"
                   value={formData.category}
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-lg"
+                  className="w-full px-3 py-2 border border-white/10 rounded-lg bg-white/5 text-white"
                 />
               </div>
               <div>
@@ -301,16 +301,16 @@ export default function SellerProducts() {
                   type="file"
                   accept="image/*"
                   onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-                  className="w-full px-3 py-2 border rounded-lg"
+                  className="w-full px-3 py-2 border border-white/10 rounded-lg bg-white/5 text-white"
                 />
                 {formData.imageUrl && !imageFile && (
-                  <p className="mt-1 text-xs text-gray-500">Current image will be kept unless you upload a new one.</p>
+                  <p className="mt-1 text-xs text-white/50">Current image will be kept unless you upload a new one.</p>
                 )}
                 {(imageFile || formData.imageUrl) && (
                   <img
                     src={imagePreview || formData.imageUrl}
                     alt="Product preview"
-                    className="mt-2 h-20 w-20 object-cover rounded border"
+                    className="mt-2 h-20 w-20 object-cover rounded border border-white/10"
                   />
                 )}
               </div>
@@ -321,14 +321,14 @@ export default function SellerProducts() {
                     setShowModal(false);
                     setSaving(false);
                   }}
-                  className="flex-1 px-4 py-2 border rounded-lg hover:bg-gray-50"
+                  className="flex-1 px-4 py-2 border border-white/10 rounded-lg hover:bg-white/5"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                  className="flex-1 px-4 py-2 bg-emerald-300 text-black rounded-lg hover:bg-emerald-200"
                 >
                   {saving ? "Saving..." : `${editingProduct ? "Update" : "Add"} Product`}
                 </button>

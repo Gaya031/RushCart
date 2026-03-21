@@ -73,74 +73,74 @@ const Product = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Loading...</p>
+      <div className="min-h-screen rc-shell flex items-center justify-center">
+        <p className="text-white/60">Loading...</p>
       </div>
     );
   }
 
   if (!product) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Product not found</p>
+      <div className="min-h-screen rc-shell flex items-center justify-center">
+        <p className="text-white/60">Product not found</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen rc-shell">
       <Navbar />
       
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="max-w-6xl mx-auto px-6 py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           {/* Product Image */}
-          <div className="bg-white rounded-lg shadow p-4">
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
             {product.images && product.images.length > 0 ? (
               <img
                 src={productImage}
                 alt={product.title}
-                className="w-full h-96 object-cover rounded-lg"
+                className="w-full h-96 object-cover rounded-xl"
               />
             ) : (
-              <div className="w-full h-96 bg-gray-200 rounded-lg flex items-center justify-center">
-                <span className="text-gray-500">No Image</span>
+              <div className="w-full h-96 bg-white/5 rounded-xl flex items-center justify-center text-white/50">
+                <span>No Image</span>
               </div>
             )}
           </div>
 
           {/* Product Details */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h1 className="text-2xl font-bold mb-2">{product.title}</h1>
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+            <h1 className="font-display text-3xl text-white mb-2">{product.title}</h1>
             
             {store && (
-              <p className="text-sm text-gray-600 mb-4">
-                Sold by: <span className="font-medium">{store.store_name}</span>
+              <p className="text-sm text-white/60 mb-4">
+                Sold by: <span className="font-medium text-white">{store.store_name}</span>
               </p>
             )}
             
-            <p className="text-3xl font-bold text-primary mb-4">
+            <p className="text-3xl font-bold text-amber-300 mb-4">
               ₹{product.price}
             </p>
             
             {product.stock > 0 ? (
-              <p className="text-green-600 mb-4">In Stock ({product.stock} available)</p>
+              <p className="text-emerald-300 mb-4">In Stock ({product.stock} available)</p>
             ) : (
-              <p className="text-red-600 mb-4">Out of Stock</p>
+              <p className="text-red-300 mb-4">Out of Stock</p>
             )}
 
             {/* Quantity Selector */}
             <div className="flex items-center gap-4 mb-6">
-              <span className="text-gray-700">Quantity:</span>
-              <div className="flex items-center border rounded">
+              <span className="text-white/70">Quantity:</span>
+              <div className="flex items-center border border-white/10 rounded-lg bg-white/5">
                 <button
-                  className="px-3 py-1 hover:bg-gray-100"
+                  className="px-3 py-1 hover:bg-white/10 text-white"
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                 >
                   -
                 </button>
-                <span className="px-3 py-1">{quantity}</span>
+                <span className="px-3 py-1 text-white">{quantity}</span>
                 <button
-                  className="px-3 py-1 hover:bg-gray-100"
+                  className="px-3 py-1 hover:bg-white/10 text-white"
                   onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
                 >
                   +
@@ -152,7 +152,7 @@ const Product = () => {
             <button
               onClick={handleAddToCart}
               disabled={product.stock <= 0}
-              className="w-full bg-primary text-white py-3 rounded-lg font-medium hover:bg-primary/90 disabled:bg-gray-300 disabled:cursor-not-allowed"
+              className="w-full bg-amber-300 text-black py-3 rounded-lg font-medium hover:bg-amber-200 disabled:bg-white/20 disabled:text-white/50 disabled:cursor-not-allowed"
             >
               Add to Cart
             </button>
@@ -160,21 +160,21 @@ const Product = () => {
             {/* Product Description */}
             {product.description && (
               <div className="mt-6">
-                <h3 className="font-semibold mb-2">Description</h3>
-                <p className="text-gray-600">{product.description}</p>
+                <h3 className="font-semibold text-white mb-2">Description</h3>
+                <p className="text-white/60">{product.description}</p>
               </div>
             )}
 
             {/* Category */}
             {product.category && (
               <div className="mt-4">
-                <span className="text-sm text-gray-500">Category: {product.category}</span>
+                <span className="text-sm text-white/50">Category: {product.category}</span>
               </div>
             )}
             <button
               type="button"
               onClick={() => setShowReviewModal(true)}
-              className="mt-6 w-full border border-green-600 text-green-700 rounded-lg py-2 hover:bg-green-50"
+              className="mt-6 w-full border border-white/20 text-white/80 rounded-lg py-2 hover:bg-white/10"
             >
               Write a Review
             </button>
@@ -183,8 +183,8 @@ const Product = () => {
 
         <div className="mt-8 space-y-4">
           <StoreReviewsSummary summary={summary} title="Product Ratings" />
-          <div className="bg-white rounded-xl shadow p-4">
-            <h3 className="font-semibold mb-3">Customer Reviews</h3>
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <h3 className="font-semibold mb-3 text-white">Customer Reviews</h3>
             <ReviewsList reviews={reviews} />
           </div>
         </div>

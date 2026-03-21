@@ -1,4 +1,3 @@
-import React from 'react'
 import { useState } from 'react';
 import { login, getMe } from '../../api/auth.api';
 import { useAuthStore } from '../../store/auth.store';
@@ -55,120 +54,93 @@ const Login = () => {
     };
 
     return (
-    <div className="min-h-screen bg-slate-50">
-      {/* Main Card */}
-      <div className="flex items-center justify-center px-4 py-16">
-        <div className="flex w-full max-w-5xl overflow-hidden bg-white shadow-xl rounded-2xl">
-          
-          {/* Left Section */}
-          <div className="w-full p-10 lg:w-1/2">
-            <h1 className="text-2xl font-bold text-gray-900">Welcome Back</h1>
-            <p className="mt-2 text-sm text-gray-500">
-              Log in to access your dashboard, track orders, or manage your store.
-            </p>
+      <div className="relative min-h-screen overflow-hidden bg-slate-950 text-white">
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1489515217757-5fd1be406fef?q=80&w=2400&auto=format&fit=crop')] bg-cover bg-center animate-hero-pan" />
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-950/90 via-slate-950/70 to-slate-900/30" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(251,191,36,0.18),transparent_55%)]" />
+        </div>
 
-            {/* Role Tabs */}
-            <div className="flex gap-2 p-1 mt-6 bg-gray-100 rounded-lg w-fit ml-24">
-              <button className="px-4 py-1 text-sm font-medium bg-white rounded-md shadow">
-                Buyer
-              </button>
-              <button className="px-4 py-1 text-sm text-gray-600">
-                Seller
-              </button>
-              <button className="px-4 py-1 text-sm text-gray-600">
-                Partner
-              </button>
-            </div>
+        <div className="relative z-10 mx-auto flex min-h-screen max-w-6xl flex-col px-6 py-10">
+          <header className="flex items-center justify-between text-sm text-white/70">
+            <span className="font-display text-xl tracking-[0.18em] text-white">
+              RushCart
+            </span>
+            <span className="uppercase tracking-[0.3em]">Hyperlocal Commerce</span>
+          </header>
 
-            {/* OAuth */}
-            <div className="flex gap-3 mt-6">
-              <button className="flex items-center justify-center w-1/2 gap-2 py-2 border rounded-lg hover:bg-gray-50">
-                🌐 Google
-              </button>
-              <button className="flex items-center justify-center w-1/2 gap-2 py-2 border rounded-lg hover:bg-gray-50">
-                📱 Phone
-              </button>
-            </div>
-
-            <div className="my-6 text-xs text-center text-gray-400">
-              OR LOGIN WITH EMAIL
-            </div>
-
-            {/* Form */}
-            <form className="space-y-4" onSubmit={submit}>
-              <div>
-                <label className="block mb-1 text-sm text-gray-600">
-                  Email or Username
-                </label>
-                <input
-                  type="email"
-                  placeholder="name@example.com"
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  onChange={e => setEmail(e.target.value)}
-                />
-              </div>
-
-              <div>
-                <div className="flex justify-between mb-1">
-                  <label className="text-sm text-gray-600">Password</label>
-                  <a href="/forgot-password" className="text-sm text-blue-600 hover:underline">
-                    Forgot Password?
-                  </a>
-                </div>
-                <input
-                  type="password"
-                  placeholder="••••••••"
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  onChange={e => setPassword(e.target.value)}
-                />
-              </div>
-
-              <button type='submit' disabled={loading} className="w-full py-3 mt-2 font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:bg-gray-400">
-                {loading ? "Signing in..." : "Sign In →"}
-              </button>
-            </form>
-
-            <p className="mt-6 text-sm text-center text-gray-500">
-              Don't have an account?{" "}
-              <a href="/register" className="text-blue-600 hover:underline">
-                Register
-              </a>
-            </p>
-          </div>
-
-          {/* Right Section */}
-          <div className="relative hidden w-1/2 lg:block">
-            <img
-              src="https://images.unsplash.com/photo-1600180758890-6b94519a8ba6"
-              alt="delivery"
-              className="object-cover w-full h-full"
-            />
-            <div className="absolute inset-0 bg-gradient-to-tr from-blue-900/80 to-blue-600/60" />
-
-            <div className="absolute inset-0 flex flex-col justify-end p-10 text-white">
-              <span className="inline-flex items-center gap-2 px-3 py-1 mb-3 text-xs bg-white/20 rounded-full w-fit">
-                🚚 QUICK COMMERCE
-              </span>
-              <h2 className="text-3xl font-bold leading-tight">
-                Fastest Delivery<br />in Your Town
-              </h2>
-              <p className="mt-3 text-sm text-white/90">
-                Join thousands of local sellers and happy customers connecting
-                through RushCart every day.
+          <main className="grid flex-1 items-center gap-12 py-10 lg:grid-cols-[1.1fr_0.9fr]">
+            <section className="space-y-6">
+              <p className="text-xs uppercase tracking-[0.4em] text-amber-300/80 animate-hero-fade">
+                Sign In
               </p>
-
-              <div className="flex items-center gap-3 mt-4 text-sm">
-                <span>👥 2k+</span>
-                <span>⭐⭐⭐⭐⭐</span>
-                <span className="opacity-90">Trusted by local vendors</span>
+              <h1 className="font-display text-4xl leading-tight md:text-5xl animate-hero-rise" style={{ animationDelay: "80ms" }}>
+                Move faster across orders, stores, and deliveries.
+              </h1>
+              <p className="max-w-md text-base text-white/75 animate-hero-rise" style={{ animationDelay: "160ms" }}>
+                One workspace for buyers, sellers, and partners powering same-day fulfillment.
+              </p>
+              <div className="grid gap-3 text-sm text-white/70 animate-hero-rise" style={{ animationDelay: "240ms" }}>
+                <span>Instant order status updates and tracking.</span>
+                <span>Seller dashboards with earnings and inventory control.</span>
+                <span>Delivery routes optimized for local drops.</span>
               </div>
-            </div>
-          </div>
+            </section>
 
+            <section className="w-full max-w-md space-y-6">
+              <form className="space-y-6" onSubmit={submit}>
+                <div className="space-y-2">
+                  <label className="text-sm uppercase tracking-[0.2em] text-white/60">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="you@rushcart.com"
+                    autoComplete="email"
+                    required
+                    className="w-full border-b border-white/30 bg-transparent px-1 py-3 text-lg text-white placeholder:text-white/40 focus:border-amber-300 focus:outline-none"
+                    onChange={e => setEmail(e.target.value)}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs uppercase tracking-[0.2em] text-white/60">
+                    <span>Password</span>
+                    <a href="/forgot-password" className="text-amber-200 hover:text-amber-100">
+                      Forgot?
+                    </a>
+                  </div>
+                  <input
+                    type="password"
+                    placeholder="••••••••"
+                    autoComplete="current-password"
+                    required
+                    className="w-full border-b border-white/30 bg-transparent px-1 py-3 text-lg text-white placeholder:text-white/40 focus:border-amber-300 focus:outline-none"
+                    onChange={e => setPassword(e.target.value)}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="flex w-full items-center justify-between rounded-full bg-amber-300 px-6 py-3 text-sm font-semibold uppercase tracking-[0.25em] text-slate-900 transition hover:-translate-y-0.5 hover:bg-amber-200 disabled:cursor-not-allowed disabled:bg-amber-300/60"
+                >
+                  <span>{loading ? "Signing in" : "Enter RushCart"}</span>
+                  <span className="text-base">→</span>
+                </button>
+              </form>
+
+              <div className="text-sm text-white/70">
+                No account yet?{" "}
+                <a href="/register" className="text-amber-200 hover:text-amber-100">
+                  Create one
+                </a>
+              </div>
+            </section>
+          </main>
         </div>
       </div>
-    </div>
-  );
+    );
 }
 
 export default Login

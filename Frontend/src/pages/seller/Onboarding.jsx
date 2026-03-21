@@ -184,32 +184,32 @@ export default function SellerOnboarding() {
     <RoleDashboardLayout role="seller" title="Seller Onboarding">
       <div className="max-w-2xl">
         {loading ? (
-          <p>Loading...</p>
+          <p className="text-white/60">Loading...</p>
         ) : (
-          <form onSubmit={submit} className="bg-white p-6 rounded-xl shadow space-y-4">
+          <form onSubmit={submit} className="rounded-2xl border border-white/10 bg-white/5 p-6 space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input
-                className="w-full border rounded px-3 py-2"
+                className="w-full border border-white/10 rounded px-3 py-2 bg-white/5 text-white"
                 placeholder="Store name"
                 value={form.store_name}
                 onChange={(e) => setForm({ ...form, store_name: e.target.value })}
                 required
               />
               <input
-                className="w-full border rounded px-3 py-2"
+                className="w-full border border-white/10 rounded px-3 py-2 bg-white/5 text-white"
                 placeholder="City"
                 value={form.city}
                 onChange={(e) => setForm({ ...form, city: e.target.value })}
               />
             </div>
             <textarea
-              className="w-full border rounded px-3 py-2 min-h-[90px]"
+              className="w-full border border-white/10 rounded px-3 py-2 min-h-[90px] bg-white/5 text-white"
               placeholder="Description"
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
             />
             <input
-              className="w-full border rounded px-3 py-2"
+              className="w-full border border-white/10 rounded px-3 py-2 bg-white/5 text-white"
               placeholder="Address"
               value={form.address}
               onChange={(e) => setForm({ ...form, address: e.target.value })}
@@ -219,26 +219,26 @@ export default function SellerOnboarding() {
                 type="button"
                 onClick={() => applyLiveLocation({ silent: false })}
                 disabled={detectingLocation}
-                className="text-sm px-3 py-1.5 rounded border hover:bg-gray-50 disabled:opacity-60"
+                className="text-sm px-3 py-1.5 rounded border border-white/10 text-white/70 hover:bg-white/5 disabled:opacity-60"
               >
                 {detectingLocation ? "Detecting location..." : "Use Live Location"}
               </button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <input
-                className="w-full border rounded px-3 py-2"
+                className="w-full border border-white/10 rounded px-3 py-2 bg-white/5 text-white"
                 placeholder="Pincode"
                 value={form.pincode}
                 onChange={(e) => setForm({ ...form, pincode: e.target.value })}
               />
               <input
-                className="w-full border rounded px-3 py-2"
+                className="w-full border border-white/10 rounded px-3 py-2 bg-white/5 text-white"
                 placeholder="Latitude"
                 value={form.latitude}
                 onChange={(e) => setForm({ ...form, latitude: e.target.value })}
               />
               <input
-                className="w-full border rounded px-3 py-2"
+                className="w-full border border-white/10 rounded px-3 py-2 bg-white/5 text-white"
                 placeholder="Longitude"
                 value={form.longitude}
                 onChange={(e) => setForm({ ...form, longitude: e.target.value })}
@@ -246,34 +246,34 @@ export default function SellerOnboarding() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-1">Store Logo</label>
+                <label className="block text-sm font-medium mb-1 text-white">Store Logo</label>
                 <input
                   type="file"
                   accept="image/*"
                   onChange={(e) => setLogoFile(e.target.files?.[0] || null)}
-                  className="w-full border rounded px-3 py-2"
+                  className="w-full border border-white/10 rounded px-3 py-2 bg-white/5 text-white"
                 />
                 {(logoPreview || form.logo_url) && (
                   <img
                     src={logoPreview || form.logo_url}
                     alt="Logo preview"
-                    className="mt-2 w-16 h-16 object-cover rounded border"
+                    className="mt-2 w-16 h-16 object-cover rounded border border-white/10"
                   />
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Cover Image</label>
+                <label className="block text-sm font-medium mb-1 text-white">Cover Image</label>
                 <input
                   type="file"
                   accept="image/*"
                   onChange={(e) => setCoverFile(e.target.files?.[0] || null)}
-                  className="w-full border rounded px-3 py-2"
+                  className="w-full border border-white/10 rounded px-3 py-2 bg-white/5 text-white"
                 />
                 {(coverPreview || form.cover_image) && (
                   <img
                     src={coverPreview || form.cover_image}
                     alt="Cover preview"
-                    className="mt-2 w-full h-16 object-cover rounded border"
+                    className="mt-2 w-full h-16 object-cover rounded border border-white/10"
                   />
                 )}
               </div>
@@ -281,16 +281,16 @@ export default function SellerOnboarding() {
                 type="number"
                 min={1}
                 max={50}
-                className="w-full border rounded px-3 py-2"
+                className="w-full border border-white/10 rounded px-3 py-2 bg-white/5 text-white"
                 placeholder="Delivery radius (km)"
                 value={form.delivery_radius_km}
                 onChange={(e) => setForm({ ...form, delivery_radius_km: e.target.value })}
               />
             </div>
-            <button disabled={uploadingImages} className="w-full bg-green-600 text-white py-2 rounded disabled:opacity-70">
+            <button disabled={uploadingImages} className="w-full bg-emerald-300 text-black py-2 rounded disabled:opacity-70">
               {uploadingImages ? "Uploading images..." : hasProfile ? "Update Seller Profile" : "Submit Onboarding"}
             </button>
-            {message && <p className="text-sm">{message}</p>}
+            {message && <p className="text-sm text-white/70">{message}</p>}
           </form>
         )}
       </div>

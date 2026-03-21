@@ -48,14 +48,14 @@ export default function Review() {
   return (
     <div className="space-y-4">
       <StoreReviewsSummary summary={summary} loading={summaryLoading} title="Store Ratings" />
-      {error && <p className="text-sm text-red-600 mb-3">{error}</p>}
+      {error && <p className="text-sm text-red-300 mb-3">{error}</p>}
       <ReviewsList reviews={reviews} loading={loading && page === 1} emptyText="No reviews yet." />
       {hasMore && (
         <button
           type="button"
           onClick={() => loadPage(page + 1)}
           disabled={loading}
-          className="mt-4 px-4 py-2 border rounded-lg hover:bg-gray-50 disabled:opacity-60"
+          className="mt-4 px-4 py-2 border border-white/10 rounded-lg text-white/70 hover:bg-white/5 disabled:opacity-60"
         >
           {loading ? "Loading..." : "Load More"}
         </button>

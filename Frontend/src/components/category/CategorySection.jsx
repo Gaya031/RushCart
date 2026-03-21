@@ -25,16 +25,21 @@ export default function CategorySection() {
   }, []);
 
   return (
-    <section className="max-w-7xl mx-auto px-4 mt-10">
-      <h3 className="font-semibold mb-4">Shop by Category</h3>
-      {loading && <p className="text-sm text-gray-500">Loading categories...</p>}
+    <section className="max-w-7xl mx-auto px-6 mt-14">
+      <div className="flex items-end justify-between gap-6">
+        <div>
+          <h3 className="font-display text-2xl text-white">Shop by Category</h3>
+          <p className="text-sm text-white/60 mt-2">Curated aisles from trusted neighborhood stores.</p>
+        </div>
+      </div>
+      {loading && <p className="text-sm text-white/60 mt-4">Loading categories...</p>}
       {!loading && categories.length === 0 && (
-        <p className="text-sm text-gray-500">No categories available right now.</p>
+        <p className="text-sm text-white/60 mt-4">No categories available right now.</p>
       )}
-      <div className="flex gap-6 overflow-x-auto pb-2">
-        {categories.map(c => (
-          <CategoryCard 
-            key={c.id || c} 
+      <div className="mt-6 flex gap-6 overflow-x-auto pb-2">
+        {categories.map((c) => (
+          <CategoryCard
+            key={c.id || c}
             title={c.name || c}
             slug={c.slug || slugify(c.name || c)}
             image={c.image_url || c.image}

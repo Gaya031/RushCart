@@ -4,17 +4,17 @@ const CheckoutHeader = () => {
   return (
     <div className="flex justify-between items-center">
       <div>
-        <p className="text-sm text-gray-500">
-          Cart &gt; <span className="text-green-600">Checkout</span> &gt; Confirmation
+        <p className="text-sm text-white/50">
+          Cart &gt; <span className="text-amber-200">Checkout</span> &gt; Confirmation
         </p>
-        <h1 className="text-2xl font-bold mt-1">Secure Checkout</h1>
-        <p className="text-gray-600">
+        <h1 className="font-display text-3xl text-white mt-2">Secure Checkout</h1>
+        <p className="text-white/60">
           Complete your order details below to get your fresh goods.
         </p>
       </div>
 
-      <div className="text-green-600 font-medium flex items-center gap-2">
-        🔒 100% Secure Checkout
+      <div className="text-amber-200 font-medium flex items-center gap-2">
+        100% secure checkout
       </div>
     </div>
   );

@@ -18,17 +18,17 @@ export default function Promotions() {
 
   return (
     <div className="space-y-8">
-      <section className="bg-green-50 rounded-xl p-4 border border-green-200">
-        <h3 className="font-semibold text-green-800">Current Offers</h3>
-        <p className="text-sm text-green-700 mt-1">
+      <section className="rounded-2xl p-4 border border-amber-300/30 bg-amber-300/10">
+        <h3 className="font-semibold text-amber-100">Current Offers</h3>
+        <p className="text-sm text-amber-100/80 mt-1">
           Free delivery on orders above INR 299. Additional store offers are shown below.
         </p>
       </section>
 
       <section>
-        <h4 className="font-semibold mb-3">Top Picks</h4>
+        <h4 className="font-semibold text-white mb-3">Top Picks</h4>
         {bestsellers.length === 0 ? (
-          <p className="text-sm text-gray-600">No bestsellers available right now.</p>
+          <p className="text-sm text-white/60">No bestsellers available right now.</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {bestsellers.map((p) => (
@@ -39,9 +39,9 @@ export default function Promotions() {
       </section>
 
       <section>
-        <h4 className="font-semibold mb-3">In-Stock Deals</h4>
+        <h4 className="font-semibold text-white mb-3">In-Stock Deals</h4>
         {discounted.length === 0 ? (
-          <p className="text-sm text-gray-600">No active deals available.</p>
+          <p className="text-sm text-white/60">No active deals available.</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {discounted.map((p) => (

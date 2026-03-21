@@ -48,38 +48,38 @@ const DeliverySchedule = ({ onModeChange, onSlotChange }) => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl">
-      <h2 className="font-semibold mb-4">2. Delivery Schedule</h2>
+    <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+      <h2 className="font-semibold text-white mb-4">2. Delivery Schedule</h2>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div
           onClick={() => chooseMode("instant")}
-          className={`border p-4 rounded-xl cursor-pointer ${
+          className={`border p-4 rounded-xl cursor-pointer transition ${
             mode === "instant"
-              ? "border-green-500 bg-green-50"
-              : "border-gray-200"
+              ? "border-amber-300/60 bg-amber-300/10 text-white"
+              : "border-white/10 text-white/70 hover:bg-white/5"
           }`}
         >
-          ⚡ <b>Instant Delivery</b>
-          <p className="text-sm">Within 30–45 mins</p>
+          <b>Instant Delivery</b>
+          <p className="text-sm">Within 30-45 mins</p>
         </div>
 
         <div
           onClick={() => chooseMode("scheduled")}
-          className={`border p-4 rounded-xl cursor-pointer ${
+          className={`border p-4 rounded-xl cursor-pointer transition ${
             mode === "scheduled"
-              ? "border-green-500 bg-green-50"
-              : "border-gray-200"
+              ? "border-amber-300/60 bg-amber-300/10 text-white"
+              : "border-white/10 text-white/70 hover:bg-white/5"
           }`}
         >
-          🕒 <b>Scheduled</b>
+          <b>Scheduled</b>
           <p className="text-sm">Choose a time slot</p>
         </div>
       </div>
 
       {mode === "scheduled" && (
         <div className="mt-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Select delivery time slot</label>
+          <label className="block text-sm font-medium text-white/70 mb-2">Select delivery time slot</label>
           <select
             value={slot}
             onChange={(e) => {
@@ -87,7 +87,7 @@ const DeliverySchedule = ({ onModeChange, onSlotChange }) => {
               setSlot(nextSlot);
               onSlotChange?.(nextSlot || null);
             }}
-            className="w-full border rounded-xl px-3 py-2"
+            className="w-full border border-white/10 rounded-xl px-3 py-2 bg-white/5 text-white"
           >
             {slots.map((entry) => (
               <option key={entry.value} value={entry.value}>

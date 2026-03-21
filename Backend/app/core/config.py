@@ -54,17 +54,10 @@ class Settings(BaseSettings):
     ELASTICSEARCH_STORES_INDEX: str = "rushcart_stores"
     ELASTICSEARCH_TIMEOUT_SECONDS: int = 5
 
-    # Observability / Telemetry
-    SENTRY_DSN: str = ""
-    SENTRY_ENVIRONMENT: str = "development"
-    SENTRY_TRACES_SAMPLE_RATE: float = 0.1
-    SENTRY_PROFILES_SAMPLE_RATE: float = 0.0
-    OTEL_ENABLED: bool = False
-    OTEL_SERVICE_NAME: str = "rushcart-backend"
-    OTEL_EXPORTER_OTLP_ENDPOINT: str = ""
-    ALERT_ERROR_RATE_THRESHOLD: float = 0.05
-    ALERT_P95_MS_THRESHOLD: float = 1500.0
-    ALERT_INFLIGHT_THRESHOLD: int = 200
+    # ImageKit
+    IMAGEKIT_PUBLIC_KEY: str = ""
+    IMAGEKIT_PRIVATE_KEY: str = ""
+    IMAGEKIT_URL_ENDPOINT: str = ""
 
     # Email
     EMAILS_ENABLED: bool = False

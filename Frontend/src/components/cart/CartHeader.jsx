@@ -7,8 +7,8 @@ const CartHeader = () => {
 
   return (
     <div>
-      <p className="text-sm text-gray-500">Home / Cart</p>
-      <h1 className="text-2xl font-bold mt-1">
+      <p className="text-sm text-white/50">Home / Cart</p>
+      <h1 className="font-display text-3xl text-white mt-2">
         Your Shopping Cart ({count} items)
       </h1>
     </div>

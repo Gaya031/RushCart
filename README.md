@@ -7,7 +7,7 @@ RushCart combines:
 - `Frontend` (React + Vite + Tailwind + Zustand)
 - `Delivery-Service` (Node.js + Socket.IO microservice for live tracking + routing)
 
-This repository is structured as a monorepo and is designed to run either locally (service-by-service) or via Docker Compose.
+This repository is structured as a monorepo and is designed to run locally (service-by-service).
 
 ## Table of Contents
 
@@ -18,17 +18,12 @@ This repository is structured as a monorepo and is designed to run either locall
 - [Tech Stack](#tech-stack)
 - [Getting Started](#getting-started)
 - [Environment Configuration](#environment-configuration)
-- [Run with Docker Compose (Recommended)](#run-with-docker-compose-recommended)
-- [Run Services Locally (Without Docker)](#run-services-locally-without-docker)
+- [Run Services Locally](#run-services-locally)
 - [Database Strategy (No Alembic)](#database-strategy-no-alembic)
 - [API Surface](#api-surface)
 - [Testing & Quality](#testing--quality)
-- [Observability & Operations](#observability--operations)
 - [Security Posture](#security-posture)
-- [CI/CD & Deployment](#cicd--deployment)
 - [Uploads & Media Handling](#uploads--media-handling)
-- [Troubleshooting](#troubleshooting)
-- [Roadmap to Full Enterprise Grade](#roadmap-to-full-enterprise-grade)
 
 ## Project Overview
 
@@ -103,12 +98,12 @@ E-Commerce/
 │   │   ├── services/        # Service-layer business logic
 │   │   ├── models/          # SQLAlchemy models
 │   │   ├── schemas/         # Pydantic schemas
-│   │   ├── core/            # Config, telemetry, logging, observability
+│   │   ├── core/            # Config, logging, security
 │   │   ├── db/              # Postgres/Redis/Mongo adapters
 │   │   └── utils/           # Upload, email, JWT, rate limiter, cache helpers
 │   ├── tests/               # Backend unit/integration tests
-│   ├── scripts/             # Load/resilience/failover checks
-│   └── uploads/             # Uploaded files (mounted in Docker)
+│   ├── scripts/             # Local utilities
+│   └── uploads/             # Uploaded files
 ├── Frontend/                # React app (Vite)
 │   └── src/
 │       ├── pages/           # Buyer/Seller/Admin/Delivery screens
@@ -116,7 +111,7 @@ E-Commerce/
 │       ├── store/           # Zustand stores
 │       └── utils/           # Media URL resolvers and helpers
 ├── Delivery-Service/        # Node.js + Socket.IO realtime service
-└── .github/workflows/       # CI, CD, security, deploy, resilience smoke
+└── .github/                 # GitHub metadata
 ```
 
 ## Tech Stack
@@ -130,7 +125,6 @@ E-Commerce/
 - JWT auth (`pyjwt` + JOSE helpers)
 - Razorpay integration
 - SMTP email sender
-- OpenTelemetry (optional), Sentry (optional)
 
 ### Frontend
 - React + Vite
@@ -151,13 +145,11 @@ E-Commerce/
 
 ### Prerequisites
 
-- Docker + Docker Compose (recommended path)
-- or local toolchain:
-  - Python 3.12+
-  - Node.js 20+
-  - PostgreSQL 16+
-  - Redis 7+
-  - Elasticsearch 8.x
+- Python 3.12+
+- Node.js 20+
+- PostgreSQL 16+
+- Redis 7+
+- Elasticsearch 8.x
 
 ## Environment Configuration
 
@@ -207,17 +199,6 @@ ELASTICSEARCH_PRODUCTS_INDEX=rushcart_products
 ELASTICSEARCH_STORES_INDEX=rushcart_stores
 ELASTICSEARCH_TIMEOUT_SECONDS=5
 
-SENTRY_DSN=
-SENTRY_ENVIRONMENT=development
-SENTRY_TRACES_SAMPLE_RATE=0.1
-SENTRY_PROFILES_SAMPLE_RATE=0.0
-OTEL_ENABLED=false
-OTEL_SERVICE_NAME=rushcart-backend
-OTEL_EXPORTER_OTLP_ENDPOINT=
-ALERT_ERROR_RATE_THRESHOLD=0.05
-ALERT_P95_MS_THRESHOLD=1500
-ALERT_INFLIGHT_THRESHOLD=200
-
 EMAILS_ENABLED=false
 SMTP_HOST=
 SMTP_PORT=587
@@ -232,6 +213,10 @@ FRONTEND_URL=http://localhost:5173
 ADMIN_EMAIL=admin@rushcart.local
 ADMIN_PASSWORD=ChangeThisAdminPassword123!
 ADMIN_NAME=RushCart Admin
+
+IMAGEKIT_PUBLIC_KEY=
+IMAGEKIT_PRIVATE_KEY=
+IMAGEKIT_URL_ENDPOINT=
 ```
 
 ### Frontend `.env` (optional but recommended)
@@ -252,36 +237,7 @@ PORT=4001
 ALLOWED_ORIGINS=http://localhost:5173
 ```
 
-## Run with Docker Compose (Recommended)
-
-From repository root:
-
-```bash
-docker compose up --build
-```
-
-Services:
-- Frontend: `http://localhost:5173`
-- Backend API: `http://localhost:8000`
-- Backend docs: `http://localhost:8000/docs`
-- Delivery service: `http://localhost:4001`
-- PostgreSQL: `localhost:5432`
-- Redis: `localhost:6379`
-- Elasticsearch: `localhost:9200`
-
-Stop stack:
-
-```bash
-docker compose down
-```
-
-Reset with volumes:
-
-```bash
-docker compose down -v
-```
-
-## Run Services Locally (Without Docker)
+## Run Services Locally
 
 ### 1) Start infra dependencies
 
@@ -348,7 +304,6 @@ Base prefix: `/api/v1`
 - Commissions: `/commissions/*`
 - Cart: `/cart/*`
 - Banners: `/banners/*`
-- System/Health/Metrics: `/system/*`
 
 OpenAPI docs:
 - Swagger UI: `/docs`
@@ -372,7 +327,6 @@ pytest -q --cov=app --cov-report=term-missing --cov-fail-under=8
 Current test modules include:
 - File upload validation
 - Email template/config checks
-- Observability metrics behavior
 - Delivery helper logic fallback behavior
 
 ### Frontend quality
@@ -390,26 +344,6 @@ cd Delivery-Service
 node --check src/server.js
 ```
 
-## Observability & Operations
-
-### Health and readiness
-- `GET /api/v1/system/health/live`
-- `GET /api/v1/system/health/ready`
-
-### Metrics and alerts
-- `GET /api/v1/system/metrics` (JSON)
-- `GET /api/v1/system/metrics/prometheus` (Prometheus text format)
-- `GET /api/v1/system/alerts` (threshold-based alert view)
-
-### Telemetry
-- Sentry support via `SENTRY_DSN`
-- OpenTelemetry support via `OTEL_ENABLED` + OTLP endpoint configuration
-
-### Performance helpers
-- In-memory API caching utility for high-traffic read paths
-- Redis-based rate limiting across sensitive APIs
-- Search fallback strategy (Elasticsearch -> DB query)
-
 ## Security Posture
 
 Implemented controls:
@@ -426,15 +360,6 @@ Implemented controls:
   - `npm audit`
   - `trivy` filesystem scan
 
-## CI/CD & Deployment
-
-Workflows available in `.github/workflows`:
-- `ci.yml`: backend/frontend/delivery checks + docker image build validation
-- `security.yml`: SAST and dependency security scans
-- `resilience.yml`: smoke load + failover checks
-- `cd.yml`: publish images to GHCR
-- `deploy.yml`: staging/production orchestration over SSH with health checks
-
 ## Uploads & Media Handling
 
 Backend serves uploaded assets from:
@@ -449,59 +374,12 @@ Supported image formats include:
 KYC documents currently allow:
 - `.pdf`
 
+Image uploads are stored on ImageKit CDN when `IMAGEKIT_*` env vars are set.
+
 Frontend media resolver normalizes:
 - absolute URLs
 - `/uploads/...` relative paths
 - image filename-only values to product upload paths
-
-## Troubleshooting
-
-### 1) JWT warning about insecure key length
-
-If you see warnings about HMAC key length, set:
-- `SECRET_KEY` to at least 32 bytes.
-
-### 2) Images fail to render (`ERR_BLOCKED_BY_RESPONSE.NotSameOrigin`)
-
-Ensure:
-- `VITE_API_URL` points to backend origin (`http://localhost:8000/api/v1`)
-- uploaded image fields store `/uploads/...` or full absolute URLs
-- backend is reachable and serving `/uploads/*`
-
-### 3) Delivery realtime errors (`localhost:4001 connection refused`)
-
-Ensure Delivery-Service is running:
-
-```bash
-cd Delivery-Service
-npm run dev
-```
-
-If service is intentionally down, frontend should fallback to backend delivery endpoints for essential flows.
-
-### 4) Elasticsearch unavailable
-
-Search APIs are designed to fallback to DB query paths, but startup warnings may appear in logs.
-
-### 5) Admin account not found
-
-Set valid `ADMIN_EMAIL` and `ADMIN_PASSWORD` in `Backend/.env` and restart backend; admin seed runs on startup.
-
-## Roadmap to Full Enterprise Grade
-
-Already present:
-- CI/CD image pipelines and deploy workflow scaffolding
-- Security scan automation
-- Observability endpoints and resilience smoke workflows
-- Delivery realtime microservice pattern
-
-Next hardening layers (recommended):
-- Expand automated backend/FE/integration test coverage substantially
-- Add distributed tracing backend + dashboards + alert routing
-- Add blue/green or canary deployment policy with rollback automation
-- Add stronger cache backend strategy (distributed cache for horizontal scale)
-- Add formal DB migration governance if strict schema lifecycle control is needed
-- Add chaos/load suites with SLO-based release gates
 
 ---
 

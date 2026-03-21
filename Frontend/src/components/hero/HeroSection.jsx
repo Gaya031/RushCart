@@ -35,10 +35,10 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 mt-6">
+    <section className="relative w-full">
       <Swiper
         modules={[Autoplay]}
-        autoplay={{ delay: 3500, disableOnInteraction: false }}
+        autoplay={{ delay: 4800, disableOnInteraction: false }}
         loop={banners.length > 1}
       >
         {banners.map((banner) => (
@@ -47,6 +47,6 @@ export default function HeroSection() {
           </SwiperSlide>
         ))}
       </Swiper>
-    </div>
+    </section>
   );
 }

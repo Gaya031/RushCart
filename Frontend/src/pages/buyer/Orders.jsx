@@ -72,48 +72,48 @@ export default function BuyerOrders() {
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
       case "delivered":
-        return "bg-green-100 text-green-800";
+        return "bg-emerald-500/20 text-emerald-200";
       case "cancelled":
-        return "bg-red-100 text-red-800";
+        return "bg-red-500/20 text-red-200";
       case "processing":
-        return "bg-blue-100 text-blue-800";
+        return "bg-blue-500/20 text-blue-200";
       default:
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-amber-500/20 text-amber-200";
     }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen rc-shell">
         <Navbar />
         <div className="flex items-center justify-center h-96">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-300"></div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen rc-shell">
       <Navbar />
       
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-6">My Orders</h1>
+      <div className="max-w-4xl mx-auto px-6 py-12">
+        <h1 className="font-display text-3xl text-white mb-6">My Orders</h1>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+          <div className="border border-red-400/30 text-red-200 px-4 py-3 rounded-xl mb-4 bg-red-500/10">
             {error}
           </div>
         )}
 
         {orders.length === 0 ? (
-          <div className="bg-white rounded-lg shadow p-8 text-center">
-            <Package className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-            <h2 className="text-xl font-semibold mb-2">No orders yet</h2>
-            <p className="text-gray-500 mb-4">Start shopping to see your orders here!</p>
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-8 text-center">
+            <Package className="w-16 h-16 mx-auto text-white/40 mb-4" />
+            <h2 className="text-xl font-semibold mb-2 text-white">No orders yet</h2>
+            <p className="text-white/60 mb-4">Start shopping to see your orders here.</p>
             <Link 
               to="/" 
-              className="inline-block bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700"
+              className="inline-block bg-amber-300 text-black px-6 py-2 rounded-lg hover:bg-amber-200"
             >
               Start Shopping
             </Link>
@@ -121,11 +121,11 @@ export default function BuyerOrders() {
         ) : (
           <div className="space-y-4">
             {orders.map((order) => (
-              <div key={order.id} className="bg-white rounded-lg shadow p-4">
+              <div key={order.id} className="rounded-2xl border border-white/10 bg-white/5 p-4">
                 <div className="flex items-center justify-between mb-4">
                   <div>
-                    <p className="text-sm text-gray-500">Order ID</p>
-                    <p className="font-semibold">#{order.id}</p>
+                    <p className="text-sm text-white/50">Order ID</p>
+                    <p className="font-semibold text-white">#{order.id}</p>
                   </div>
                   <div className="flex items-center gap-2">
                     {getStatusIcon(order.status)}
@@ -135,22 +135,22 @@ export default function BuyerOrders() {
                   </div>
                 </div>
 
-                <div className="border-t pt-4">
-                  <p className="text-sm text-gray-500 mb-2">Items</p>
+                <div className="border-t border-white/10 pt-4">
+                  <p className="text-sm text-white/50 mb-2">Items</p>
                   <div className="space-y-2">
                     {order.items?.map((item, idx) => (
-                      <div key={idx} className="flex justify-between text-sm">
+                      <div key={idx} className="flex justify-between text-sm text-white/70">
                         <span>Product #{item.product_id} x {item.quantity}</span>
-                        <span className="font-medium">₹{item.price * item.quantity}</span>
+                        <span className="font-medium text-white">₹{item.price * item.quantity}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="border-t pt-4 mt-4 flex justify-between items-center">
+                <div className="border-t border-white/10 pt-4 mt-4 flex justify-between items-center">
                   <div>
-                    <p className="text-sm text-gray-500">Total</p>
-                    <p className="text-xl font-bold">₹{order.total_amount || order.total}</p>
+                    <p className="text-sm text-white/50">Total</p>
+                    <p className="text-xl font-bold text-white">₹{order.total_amount || order.total}</p>
                   </div>
                   <div className="flex items-center gap-2">
                     {canCancel(order.status) && (
@@ -158,14 +158,14 @@ export default function BuyerOrders() {
                         type="button"
                         onClick={() => handleCancel(order.id)}
                         disabled={cancellingOrderId === order.id}
-                        className="px-3 py-2 rounded-lg border border-red-300 text-red-700 hover:bg-red-50 disabled:opacity-60"
+                        className="px-3 py-2 rounded-lg border border-red-400/40 text-red-200 hover:bg-red-500/10 disabled:opacity-60"
                       >
                         {cancellingOrderId === order.id ? "Cancelling..." : "Cancel Order"}
                       </button>
                     )}
                     <Link
                       to={`/order/${order.id}`}
-                      className="flex items-center gap-2 text-green-600 hover:text-green-700"
+                      className="flex items-center gap-2 text-amber-200 hover:text-amber-100"
                     >
                       View Details <ArrowRight className="w-4 h-4" />
                     </Link>

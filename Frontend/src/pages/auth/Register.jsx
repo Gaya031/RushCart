@@ -45,94 +45,103 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="flex min-h-screen">
-        {/* LEFT */}
-        <div className="w-full px-8 py-10 bg-white lg:w-1/2">
-          <div className="flex items-center gap-2 mb-8 text-lg font-semibold">
-            📄 RushCart
-          </div>
+    <div className="relative min-h-screen overflow-hidden bg-slate-950 text-white">
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=2400&auto=format&fit=crop')] bg-cover bg-center animate-hero-pan" />
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-950/90 via-slate-950/70 to-slate-900/30" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(251,191,36,0.18),transparent_55%)]" />
+      </div>
 
-          <h1 className="text-3xl font-bold text-gray-900">
-            Create an account
-          </h1>
-          <p className="mt-2 text-sm text-gray-500">
-            Connect with the best local sellers near you.
-          </p>
+      <div className="relative z-10 mx-auto flex min-h-screen max-w-6xl flex-col px-6 py-10">
+        <header className="flex items-center justify-between text-sm text-white/70">
+          <span className="font-display text-xl tracking-[0.18em] text-white">
+            RushCart
+          </span>
+          <span className="uppercase tracking-[0.3em]">Create Account</span>
+        </header>
 
-          {/* Role Tabs */}
-          <div className="flex gap-2 p-1 mt-6 ml-32 bg-blue-50 rounded-full w-fit">
-            {["buyer", "seller", "delivery"].map(r => (
-              <button
-                key={r}
-                type="button"
-                onClick={() => setForm({ ...form, role: r })}
-                className={`px-6 py-2 text-sm rounded-full ${
-                  form.role === r
-                    ? "bg-blue-600 text-white"
-                    : "text-blue-600"
-                }`}
-              >
-                {r.charAt(0).toUpperCase() + r.slice(1)}
-              </button>
-            ))}
-          </div>
+        <main className="grid flex-1 items-center gap-12 py-10 lg:grid-cols-[1.1fr_0.9fr]">
+          <section className="space-y-6">
+            <p className="text-xs uppercase tracking-[0.4em] text-amber-300/80 animate-hero-fade">
+              Join the Network
+            </p>
+            <h1 className="font-display text-4xl leading-tight md:text-5xl animate-hero-rise" style={{ animationDelay: "80ms" }}>
+              Bring your store, orders, or delivery route online.
+            </h1>
+            <p className="max-w-md text-base text-white/75 animate-hero-rise" style={{ animationDelay: "160ms" }}>
+              RushCart connects local commerce in minutes. Pick your role and start moving.
+            </p>
+          </section>
 
-          {/* FORM */}
-          <form className="mt-8 space-y-5" onSubmit={submit}>
-            <Input label="Full Name" name="name" value={form.name} onChange={handleChange}  />
-            <Input label="Email Address" name="email" value={form.email} onChange={handleChange} />
-            <Input label="Phone Number" name="phone" value={form.phone} onChange={handleChange} />
-
-            <Input
-              label="Password"
-              type="password"
-              name="password"
-              value={form.password}
-              onChange={handleChange}
-            />
-
-            <div>
-              <label className="block mb-1 text-sm text-gray-600">
-                Confirm Password
-              </label>
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={e => setConfirmPassword(e.target.value)}
-                className={`w-full px-4 py-3 border rounded-full focus:outline-none focus:ring-2 ${
-                  error ? "border-red-500 focus:ring-red-500" : "focus:ring-blue-500"
-                }`}
-              />
-              {error && (
-                <p className="mt-1 text-sm text-red-500">
-                  {error}
-                </p>
-              )}
+          <section className="w-full max-w-md space-y-8">
+            <div className="space-y-3 text-xs uppercase tracking-[0.25em] text-white/60">
+              <span>Choose your role</span>
+              <div className="flex flex-wrap gap-3 text-sm font-medium normal-case">
+                {["buyer", "seller", "delivery"].map(role => (
+                  <button
+                    key={role}
+                    type="button"
+                    onClick={() => setForm({ ...form, role })}
+                    className={`border-b-2 px-2 py-1 transition ${
+                      form.role === role
+                        ? "border-amber-300 text-amber-200"
+                        : "border-transparent text-white/70 hover:text-white"
+                    }`}
+                  >
+                    {role.charAt(0).toUpperCase() + role.slice(1)}
+                  </button>
+                ))}
+              </div>
             </div>
 
-            <button className="w-full py-3 text-white bg-blue-600 rounded-full hover:bg-blue-700">
-              Create Account
-            </button>
-          </form>
+            <form className="space-y-6" onSubmit={submit}>
+              <Input label="Full Name" name="name" value={form.name} onChange={handleChange} />
+              <Input label="Email Address" name="email" value={form.email} onChange={handleChange} />
+              <Input label="Phone Number" name="phone" value={form.phone} onChange={handleChange} />
+              <Input
+                label="Password"
+                type="password"
+                name="password"
+                value={form.password}
+                onChange={handleChange}
+              />
 
-          <p className="mt-6 text-sm text-center text-gray-500">
-            Already have an account?{" "}
-            <a href="/login" className="text-blue-600 hover:underline">
-              Log in
-            </a>
-          </p>
-        </div>
+              <div className="space-y-2">
+                <label className="text-sm uppercase tracking-[0.2em] text-white/60">
+                  Confirm Password
+                </label>
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={e => setConfirmPassword(e.target.value)}
+                  required
+                  className={`w-full border-b bg-transparent px-1 py-3 text-lg text-white placeholder:text-white/40 focus:outline-none ${
+                    error
+                      ? "border-red-400 focus:border-red-400"
+                      : "border-white/30 focus:border-amber-300"
+                  }`}
+                />
+                {error && (
+                  <p className="text-xs uppercase tracking-[0.2em] text-red-300">
+                    {error}
+                  </p>
+                )}
+              </div>
 
-        {/* RIGHT (UNCHANGED) */}
-        <div className="relative hidden w-1/2 lg:block">
-          <img
-            src="https://images.unsplash.com/photo-1603575448360-153f093fd0a9"
-            alt="delivery"
-            className="object-cover w-full h-full"
-          />
-          <div className="absolute inset-0 bg-black/40" />
-        </div>
+              <button className="flex w-full items-center justify-between rounded-full bg-amber-300 px-6 py-3 text-sm font-semibold uppercase tracking-[0.25em] text-slate-900 transition hover:-translate-y-0.5 hover:bg-amber-200">
+                <span>Create Account</span>
+                <span className="text-base">→</span>
+              </button>
+            </form>
+
+            <div className="text-sm text-white/70">
+              Already have an account?{" "}
+              <a href="/login" className="text-amber-200 hover:text-amber-100">
+                Log in
+              </a>
+            </div>
+          </section>
+        </main>
       </div>
     </div>
   );
@@ -141,12 +150,12 @@ export default function Register() {
 /* Reusable input – UI unchanged */
 function Input({ label, ...props }) {
   return (
-    <div>
-      <label className="block mb-1 text-sm text-gray-600">{label}</label>
+    <div className="space-y-2">
+      <label className="text-sm uppercase tracking-[0.2em] text-white/60">{label}</label>
       <input
         {...props}
         required
-        className="w-full px-4 py-3 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="w-full border-b border-white/30 bg-transparent px-1 py-3 text-lg text-white placeholder:text-white/40 focus:border-amber-300 focus:outline-none"
       />
     </div>
   );

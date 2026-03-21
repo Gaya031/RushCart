@@ -55,34 +55,38 @@ export default function OrderDetail() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen rc-shell">
       <Navbar />
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        {loading && <p>Loading order...</p>}
-        {!loading && error && <p className="text-red-600">{error}</p>}
+      <div className="max-w-4xl mx-auto px-6 py-12">
+        {loading && <p className="text-white/60">Loading order...</p>}
+        {!loading && error && <p className="text-red-300">{error}</p>}
         {!loading && order && (
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
             <div className="flex items-start justify-between gap-4 mb-4">
-              <h1 className="text-2xl font-bold">Order #{order.id}</h1>
+              <h1 className="font-display text-3xl text-white">Order #{order.id}</h1>
               {canCancel(order.status) && (
                 <button
                   type="button"
                   onClick={onCancelOrder}
                   disabled={cancelling}
-                  className="px-3 py-2 rounded-lg border border-red-300 text-red-700 hover:bg-red-50 disabled:opacity-60"
+                  className="px-3 py-2 rounded-lg border border-red-400/40 text-red-200 hover:bg-red-500/10 disabled:opacity-60"
                 >
                   {cancelling ? "Cancelling..." : "Cancel Order"}
                 </button>
               )}
             </div>
-            <p className="mb-2">Status: <b>{order.status}</b></p>
-            <p className="mb-4">Total: <b>₹{order.total_amount}</b></p>
-            <h2 className="font-semibold mb-2">Items</h2>
+            <p className="mb-2 text-white/70">
+              Status: <b className="text-white">{order.status}</b>
+            </p>
+            <p className="mb-4 text-white/70">
+              Total: <b className="text-white">₹{order.total_amount}</b>
+            </p>
+            <h2 className="font-semibold mb-2 text-white">Items</h2>
             <div className="space-y-2">
               {order.items?.map((item, idx) => (
-                <div key={idx} className="flex justify-between border-b pb-2">
+                <div key={idx} className="flex justify-between border-b border-white/10 pb-2 text-white/70">
                   <span>Product #{item.product_id} x {item.quantity}</span>
-                  <span>₹{item.price * item.quantity}</span>
+                  <span className="text-white">₹{item.price * item.quantity}</span>
                 </div>
               ))}
             </div>

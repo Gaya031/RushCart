@@ -90,26 +90,32 @@ export default function OrderTracking() {
   const currentIndex = steps.indexOf(order?.status || "placed");
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen rc-shell">
       <Navbar />
-      <div className="max-w-3xl mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-4">Order Tracking #{orderId}</h1>
+      <div className="max-w-3xl mx-auto px-6 py-12">
+        <h1 className="font-display text-3xl text-white mb-4">Order Tracking #{orderId}</h1>
         {!order ? (
-          <p>Loading tracking...</p>
+          <p className="text-white/60">Loading tracking...</p>
         ) : (
-          <div className="bg-white rounded-xl p-6 shadow">
-            <p className="mb-6">Current status: <b>{order.status}</b></p>
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+            <p className="mb-6 text-white/70">
+              Current status: <b className="text-white">{order.status}</b>
+            </p>
             <div className="space-y-4">
               {steps.map((s, idx) => (
                 <div key={s} className="flex items-center gap-3">
-                  <div className={`w-4 h-4 rounded-full ${idx <= currentIndex ? "bg-green-600" : "bg-gray-300"}`} />
-                  <span className="capitalize">{s}</span>
+                  <div
+                    className={`w-4 h-4 rounded-full ${
+                      idx <= currentIndex ? "bg-amber-300" : "bg-white/20"
+                    }`}
+                  />
+                  <span className="capitalize text-white/70">{s}</span>
                 </div>
               ))}
             </div>
             {tracking && (
-              <div className="mt-6 border-t pt-4 text-sm text-gray-700 space-y-1">
-                <p><b>Live Driver Location</b></p>
+              <div className="mt-6 border-t border-white/10 pt-4 text-sm text-white/70 space-y-1">
+                <p className="text-white">Live Driver Location</p>
                 <p>Latitude: {tracking.lat}</p>
                 <p>Longitude: {tracking.lng}</p>
                 {tracking.updated_at && <p>Updated: {new Date(tracking.updated_at).toLocaleTimeString()}</p>}

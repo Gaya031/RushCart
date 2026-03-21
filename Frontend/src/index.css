@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -45,6 +46,8 @@
 }
 
 :root {
+  --font-body: "Plus Jakarta Sans", "Segoe UI", sans-serif;
+  --font-display: "Fraunces", "Times New Roman", serif;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -119,5 +122,78 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-body);
+  }
+}
+
+@keyframes hero-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-fade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes hero-pan {
+  0% {
+    transform: scale(1) translateY(0);
+  }
+  100% {
+    transform: scale(1.08) translateY(-1.5%);
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .rc-shell {
+    background-color: #0b0b0b;
+    color: #f8fafc;
+  }
+
+  .rc-surface {
+    background-color: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1.25rem;
+  }
+
+  .rc-surface-strong {
+    background-color: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 1.25rem;
+  }
+
+  .rc-muted {
+    color: rgba(248, 250, 252, 0.6);
+  }
+
+  .rc-divider {
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .animate-hero-rise {
+    animation: hero-rise 0.8s ease-out forwards;
+  }
+
+  .animate-hero-fade {
+    animation: hero-fade 0.9s ease-out forwards;
+  }
+
+  .animate-hero-pan {
+    animation: hero-pan 18s ease-in-out infinite alternate;
   }
 }

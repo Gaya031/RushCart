@@ -37,83 +37,87 @@ export default function BuyerWallet() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen rc-shell">
         <Navbar />
         <div className="flex items-center justify-center h-96">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-300"></div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen rc-shell">
       <Navbar />
       
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-6">My Wallet</h1>
+      <div className="max-w-4xl mx-auto px-6 py-12">
+        <h1 className="font-display text-3xl text-white mb-6">My Wallet</h1>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+          <div className="border border-red-400/30 text-red-200 px-4 py-3 rounded-xl mb-4 bg-red-500/10">
             {error}
           </div>
         )}
 
         {/* Wallet Balance Card */}
-        <div className="bg-gradient-to-r from-green-600 to-green-500 rounded-xl p-6 text-white mb-6">
+        <div className="rounded-2xl p-6 text-white mb-6 border border-amber-300/20 bg-gradient-to-r from-amber-400/20 via-amber-300/10 to-white/5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-green-100 text-sm mb-1">Available Balance</p>
-              <p className="text-4xl font-bold">₹{wallet?.balance || 0}</p>
+              <p className="text-white/60 text-sm mb-1">Available Balance</p>
+              <p className="text-4xl font-bold text-white">₹{wallet?.balance || 0}</p>
             </div>
-            <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
+            <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center">
               <WalletIcon className="w-8 h-8" />
             </div>
           </div>
           
           <div className="flex gap-3 mt-6">
-            <button className="flex-1 bg-white text-green-600 py-2 rounded-lg font-medium hover:bg-green-50">
+            <button className="flex-1 bg-amber-300 text-black py-2 rounded-lg font-medium hover:bg-amber-200">
               Add Money
             </button>
-            <button className="flex-1 bg-white/20 text-white py-2 rounded-lg font-medium hover:bg-white/30">
+            <button className="flex-1 border border-white/20 text-white py-2 rounded-lg font-medium hover:bg-white/10">
               Send Money
             </button>
           </div>
         </div>
 
         {/* Transaction History */}
-        <div className="bg-white rounded-lg shadow">
-          <div className="p-4 border-b">
-            <h2 className="text-lg font-semibold">Transaction History</h2>
+        <div className="rounded-2xl border border-white/10 bg-white/5">
+          <div className="p-4 border-b border-white/10">
+            <h2 className="text-lg font-semibold text-white">Transaction History</h2>
           </div>
 
           {wallet?.transactions?.length === 0 ? (
-            <div className="p-8 text-center text-gray-500">
-              <CreditCard className="w-12 h-12 mx-auto mb-3 text-gray-400" />
+            <div className="p-8 text-center text-white/60">
+              <CreditCard className="w-12 h-12 mx-auto mb-3 text-white/30" />
               <p>No transactions yet</p>
             </div>
           ) : (
-            <div className="divide-y">
+            <div className="divide-y divide-white/10">
               {wallet?.transactions?.map((txn, index) => (
                 <div key={index} className="p-4 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                      txn.type === "credit" ? "bg-green-100" : "bg-red-100"
-                    }`}>
+                    <div
+                      className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                        txn.type === "credit" ? "bg-emerald-500/20" : "bg-red-500/20"
+                      }`}
+                    >
                       {txn.type === "credit" ? (
-                        <ArrowDownLeft className="w-5 h-5 text-green-600" />
+                        <ArrowDownLeft className="w-5 h-5 text-emerald-200" />
                       ) : (
-                        <ArrowUpRight className="w-5 h-5 text-red-600" />
+                        <ArrowUpRight className="w-5 h-5 text-red-200" />
                       )}
                     </div>
                     <div>
-                      <p className="font-medium">{txn.description || txn.type}</p>
-                      <p className="text-sm text-gray-500">{formatDate(txn.created_at)}</p>
+                      <p className="font-medium text-white">{txn.description || txn.type}</p>
+                      <p className="text-sm text-white/50">{formatDate(txn.created_at)}</p>
                     </div>
                   </div>
-                  <p className={`font-semibold ${
-                    txn.type === "credit" ? "text-green-600" : "text-red-600"
-                  }`}>
+                  <p
+                    className={`font-semibold ${
+                      txn.type === "credit" ? "text-emerald-200" : "text-red-200"
+                    }`}
+                  >
                     {txn.type === "credit" ? "+" : "-"}₹{txn.amount}
                   </p>
                 </div>
@@ -127,4 +131,3 @@ export default function BuyerWallet() {
     </div>
   );
 }
-

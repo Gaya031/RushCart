@@ -25,12 +25,14 @@ const StoreDepartments = () => {
 
   return (
     <div className='mt-6'>
-      <h4 className='font-semibold mb-3'>Departments</h4>
-      <ul className='space-y-2 text-sm'>
+      <h4 className='font-semibold mb-3 text-white'>Departments</h4>
+      <ul className='space-y-2 text-sm text-white/60'>
         {categories.map(cat => (
           <li
             key={cat}
-            className={`cursor-pointer hover:text-blue-600 ${selected === cat ? "text-blue-600 font-semibold" : ""}`}
+            className={`cursor-pointer transition ${
+              selected === cat ? "text-amber-200 font-semibold" : "hover:text-white"
+            }`}
             onClick={() => pickCategory(cat)}
           >
             {cat === "all" ? "All Departments" : cat}

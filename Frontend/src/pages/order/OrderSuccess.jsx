@@ -1,8 +1,9 @@
-import React from 'react'
 import { useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "../../store/cart.store";
+import Navbar from "../../components/navbar/Navbar";
+import Footer from "../../components/footer/Footer";
 
 const OrderSuccess = () => {
   const [params] = useSearchParams();
@@ -18,65 +19,71 @@ const OrderSuccess = () => {
 
   if (!orderId) {
     return (
-      <div className="max-w-3xl mx-auto p-8 text-center">
-        <h1 className="text-xl font-semibold">Invalid Order</h1>
-        <Button className="mt-4" onClick={() => navigate("/")}>
+      <div className="min-h-screen rc-shell">
+        <Navbar />
+        <div className="max-w-3xl mx-auto p-8 text-center">
+          <h1 className="text-xl font-semibold text-white">Invalid Order</h1>
+          <Button className="mt-4 bg-amber-300 text-black hover:bg-amber-200" onClick={() => navigate("/")}>
           Go Home
-        </Button>
+          </Button>
+        </div>
+        <Footer />
       </div>
     );
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-16 text-center">
-      {/* Success Icon */}
-      <div className="w-20 h-20 mx-auto rounded-full bg-green-100 flex items-center justify-center text-green-600 text-3xl">
-        ✓
-      </div>
-
-      <h1 className="text-2xl font-bold mt-6">
-        Order Placed Successfully!
-      </h1>
-
-      <p className="text-gray-600 mt-2">
-        Thank you for shopping with RushCart. Your order has been confirmed.
-      </p>
-
-      {/* Order Details */}
-      <div className="bg-white rounded-xl shadow-sm p-6 mt-8 text-left">
-        <div className="flex justify-between mb-2">
-          <span className="text-gray-500">Order ID</span>
-          <span className="font-medium">#{orderId}</span>
+    <div className="min-h-screen rc-shell">
+      <Navbar />
+      <div className="max-w-3xl mx-auto px-6 py-16 text-center">
+        <div className="w-20 h-20 mx-auto rounded-full bg-amber-300/20 flex items-center justify-center text-amber-200 text-3xl">
+          ✓
         </div>
 
-        <div className="flex justify-between mb-2">
-          <span className="text-gray-500">Delivery</span>
-          <span className="font-medium">30–45 minutes</span>
+        <h1 className="font-display text-3xl text-white mt-6">
+          Order Placed Successfully
+        </h1>
+
+        <p className="text-white/60 mt-2">
+          Thank you for shopping with RushCart. Your order has been confirmed.
+        </p>
+
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-6 mt-8 text-left">
+          <div className="flex justify-between mb-2 text-white/70">
+            <span>Order ID</span>
+            <span className="font-medium text-white">#{orderId}</span>
+          </div>
+
+          <div className="flex justify-between mb-2 text-white/70">
+            <span>Delivery</span>
+            <span className="font-medium text-white">30-45 minutes</span>
+          </div>
+
+          <div className="flex justify-between text-white/70">
+            <span>Payment</span>
+            <span className="font-medium text-white">Confirmed</span>
+          </div>
         </div>
 
-        <div className="flex justify-between">
-          <span className="text-gray-500">Payment</span>
-          <span className="font-medium">Confirmed</span>
+        <div className="flex justify-center gap-4 mt-10">
+          <Button
+            variant="outline"
+            className="border-white/20 text-white hover:bg-white/10"
+            onClick={() => navigate("/buyer/orders")}
+          >
+            View Orders
+          </Button>
+
+          <Button className="bg-amber-300 text-black hover:bg-amber-200" onClick={() => navigate("/")}>
+            Continue Shopping
+          </Button>
         </div>
-      </div>
-    {/* Actions */}
-      <div className="flex justify-center gap-4 mt-10">
-        <Button
-          variant="outline"
-          onClick={() => navigate("/buyer/orders")}
-        >
-          View Orders
-        </Button>
 
-        <Button onClick={() => navigate("/")}>
-          Continue Shopping
-        </Button>
+        <p className="text-sm text-white/50 mt-6">
+          You will receive order updates via notification.
+        </p>
       </div>
-
-      {/* Footer hint */}
-      <p className="text-sm text-gray-500 mt-6">
-        You will receive order updates via notification.
-      </p>
+      <Footer />
     </div>
   );
 }

@@ -41,21 +41,21 @@ export default function CategoryPage() {
   }, [slug]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen rc-shell">
       <Navbar />
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-6 py-12">
         {loading ? (
-          <p>Loading category...</p>
+          <p className="text-white/60">Loading category...</p>
         ) : error ? (
-          <p className="text-red-600 text-sm">{error}</p>
+          <p className="text-red-300 text-sm">{error}</p>
         ) : (
           <>
-            <h1 className="text-2xl font-bold mb-2">{category?.name}</h1>
-            {category?.description && <p className="text-gray-600 mb-6">{category.description}</p>}
+            <h1 className="font-display text-3xl text-white mb-2">{category?.name}</h1>
+            {category?.description && <p className="text-white/60 mb-8">{category.description}</p>}
             {products.length === 0 ? (
-              <p className="text-gray-600">No products available in this category.</p>
+              <p className="text-white/60">No products available in this category.</p>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {products.map((p) => (
                   <ProductCard key={p.id} product={p} />
                 ))}

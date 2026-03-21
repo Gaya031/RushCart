@@ -41,13 +41,18 @@ const NearbyStores = () => {
     };
   }, [hasCoordinates, lat, lng]);
 
-  if (!hasCoordinates) return <p className='px-4'>Enable location to view nearby stores.</p>;
-  if (loading) return <p className='px-4'>Loading stores...</p>;
-  if (error) return <p className='px-4 text-sm text-red-600'>{error}</p>;
-  if (!stores.length) return <p className='px-4'>No stores nearby</p>;
+  if (!hasCoordinates) return <p className='px-6 text-white/60'>Enable location to view nearby stores.</p>;
+  if (loading) return <p className='px-6 text-white/60'>Loading stores...</p>;
+  if (error) return <p className='px-6 text-sm text-red-300'>{error}</p>;
+  if (!stores.length) return <p className='px-6 text-white/60'>No stores nearby</p>;
   return (
-    <section className='max-w-7xl mx-auto px-4 mt-12'>
-      <h3 className='font-semibold mb-4'>Stores Near You</h3>
+    <section className='max-w-7xl mx-auto px-6 mt-16'>
+      <div className="flex items-end justify-between gap-6 mb-5">
+        <div>
+          <h3 className='font-display text-2xl text-white'>Stores Near You</h3>
+          <p className="text-sm text-white/60 mt-2">Open now, fast handoff, trusted ratings.</p>
+        </div>
+      </div>
       <Swiper
         slidesPerView={1.2}
         spaceBetween={16}

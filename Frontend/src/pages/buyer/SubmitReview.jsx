@@ -27,16 +27,16 @@ export default function SubmitReview() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen rc-shell">
       <Navbar />
-      <div className="max-w-xl mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-4">Submit Review</h1>
-        <form onSubmit={submit} className="bg-white rounded-xl shadow p-6 space-y-4">
+      <div className="max-w-xl mx-auto px-6 py-12">
+        <h1 className="font-display text-3xl text-white mb-4">Submit Review</h1>
+        <form onSubmit={submit} className="rounded-2xl border border-white/10 bg-white/5 p-6 space-y-4">
           <input
             type="number"
             value={productId}
             onChange={(e) => setProductId(e.target.value)}
-            className="w-full border rounded-lg px-3 py-2"
+            className="w-full border border-white/10 rounded-lg px-3 py-2 bg-white/5 text-white"
             placeholder="Product ID"
             required
           />
@@ -46,18 +46,18 @@ export default function SubmitReview() {
             max={5}
             value={rating}
             onChange={(e) => setRating(e.target.value)}
-            className="w-full border rounded-lg px-3 py-2"
+            className="w-full border border-white/10 rounded-lg px-3 py-2 bg-white/5 text-white"
             placeholder="Rating 1-5"
             required
           />
           <textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            className="w-full border rounded-lg px-3 py-2 min-h-[110px]"
+            className="w-full border border-white/10 rounded-lg px-3 py-2 min-h-[110px] bg-white/5 text-white"
             placeholder="Comment"
           />
-          <button className="w-full bg-green-600 text-white py-2 rounded-lg">Submit</button>
-          {message && <p className="text-sm">{message}</p>}
+          <button className="w-full bg-amber-300 text-black py-2 rounded-lg hover:bg-amber-200">Submit</button>
+          {message && <p className="text-sm text-white/70">{message}</p>}
         </form>
       </div>
       <Footer />

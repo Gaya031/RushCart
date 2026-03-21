@@ -13,13 +13,11 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
 
 from app.core.config import settings
-from app.core.observability import request_metrics
 from app.api.api_v1 import api_router
 from app.db.redis import init_redis, close_redis
 from app.db.postgres import init_db
 from app.core.exceptions import AppException
 from app.core.logging import logger
-from app.core.telemetry import init_telemetry
 from app.services.search_service import close_search_client, ensure_search_indices
 
 @asynccontextmanager
@@ -58,8 +56,6 @@ def create_app() -> FastAPI:
         debug=settings.DEBUG,
         lifespan=lifespan,
     )
-    init_telemetry(app)
-
     if settings.trusted_hosts:
         app.add_middleware(TrustedHostMiddleware, allowed_hosts=settings.trusted_hosts)
 
@@ -79,7 +75,6 @@ def create_app() -> FastAPI:
     async def security_and_request_logging(request: Request, call_next):
         request_id = request.headers.get("x-request-id") or str(uuid4())
         start = time.perf_counter()
-        request_metrics.begin_request()
         status_code = 500
         response = None
         try:
@@ -90,12 +85,6 @@ def create_app() -> FastAPI:
             raise
         finally:
             duration_ms = round((time.perf_counter() - start) * 1000, 2)
-            request_metrics.end_request(
-                method=request.method,
-                path=request.url.path,
-                status_code=status_code,
-                duration_ms=duration_ms,
-            )
             logger.info(
                 "request_id=%s method=%s path=%s status=%s duration_ms=%s",
                 request_id,

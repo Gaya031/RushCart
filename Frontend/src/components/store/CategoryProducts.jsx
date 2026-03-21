@@ -26,7 +26,7 @@ const CategoryProducts = ({ products: providedProducts }) => {
     <div className='space-y-10'>
         {Object.entries(grouped).map(([category, items]) => (
             <div key={category}>
-                <h4 className='font-semibold mb-4'>{category}</h4>
+                <h4 className='font-semibold text-white mb-4'>{category}</h4>
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
                     {items.map(p => (
                         <ProductCard key={p.id} product={p} />

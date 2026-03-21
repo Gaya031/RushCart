@@ -16,9 +16,16 @@ const BestSellers = () => {
 
   return (
     <section className='mb-10'>
-      <h3 className='font-semibold mb-4'>BestSellers</h3>
+      <h3 className='font-display text-2xl text-white mb-4'>Best Sellers</h3>
 
-      <Swiper slidesPerView={4} spaceBetween={16}>
+      <Swiper
+        slidesPerView={1.4}
+        spaceBetween={16}
+        breakpoints={{
+          640: { slidesPerView: 2.2 },
+          1024: { slidesPerView: 4 },
+        }}
+      >
         {products.map(p => (
           <SwiperSlide key={p.id}>
             <ProductCard product={p} />

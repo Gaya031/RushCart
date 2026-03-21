@@ -24,8 +24,8 @@ const PaymentMethod = ({ onMethodSelect }) => {
   ];
 
   return (
-    <div className="bg-white p-6 rounded-xl">
-      <h2 className="font-semibold mb-4">3. Payment Method</h2>
+    <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+      <h2 className="font-semibold text-white mb-4">3. Payment Method</h2>
 
       <div className="space-y-3">
         {paymentOptions.map(opt => {
@@ -36,15 +36,15 @@ const PaymentMethod = ({ onMethodSelect }) => {
               onClick={() => setMethod(opt.id)}
               className={`border p-4 rounded-xl cursor-pointer transition-all ${
                 method === opt.id
-                  ? "border-green-500 bg-green-50"
-                  : "border-gray-200 hover:border-gray-300"
+                  ? "border-amber-300/60 bg-amber-300/10"
+                  : "border-white/10 hover:bg-white/5"
               }`}
             >
               <div className="flex items-center gap-3">
-                <Icon className={`w-5 h-5 ${method === opt.id ? "text-green-600" : "text-gray-400"}`} />
+                <Icon className={`w-5 h-5 ${method === opt.id ? "text-amber-200" : "text-white/40"}`} />
                 <div>
-                  <b className={method === opt.id ? "text-green-700" : ""}>{opt.label}</b>
-                  <p className="text-sm text-gray-500">{opt.desc}</p>
+                  <b className={method === opt.id ? "text-white" : "text-white/80"}>{opt.label}</b>
+                  <p className="text-sm text-white/50">{opt.desc}</p>
                 </div>
               </div>
             </div>
@@ -53,12 +53,12 @@ const PaymentMethod = ({ onMethodSelect }) => {
       </div>
 
       {method === "prepaid" && (
-        <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-          <div className="flex items-center gap-2 text-amber-800">
+        <div className="mt-4 p-4 bg-amber-300/10 border border-amber-300/30 rounded-lg">
+          <div className="flex items-center gap-2 text-amber-200">
             <Smartphone className="w-5 h-5" />
             <span className="font-medium">Save ₹25 on this order!</span>
           </div>
-          <p className="text-sm text-amber-700 mt-1">
+          <p className="text-sm text-amber-100/80 mt-1">
             Prepaid orders get free delivery + exclusive discounts
           </p>
         </div>

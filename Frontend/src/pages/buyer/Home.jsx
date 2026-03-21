@@ -46,7 +46,7 @@ import Footer from "../../components/footer/Footer";
 
 export default function Home() {
   return (
-    <div className="bg-gray-50">
+    <div className="rc-shell">
       <Navbar />
       <HeroSection />
       <CategorySection />

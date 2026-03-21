@@ -11,32 +11,32 @@ const CartList = () => {
   if (!items.length) {
     return (
       <div className="space-y-4">
-        <div className="bg-white p-6 rounded-xl text-center">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-center text-white/70">
           Your cart is empty
         </div>
         {!!savedItems.length && (
-          <div className="bg-white p-6 rounded-xl">
-            <h3 className="font-semibold mb-4">Saved for later ({savedItems.length})</h3>
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+            <h3 className="font-semibold mb-4 text-white">Saved for later ({savedItems.length})</h3>
             <div className="space-y-3">
               {savedItems.map((item) => (
-                <div key={item.productId} className="flex items-center gap-4 border rounded-lg p-3">
+                <div key={item.productId} className="flex items-center gap-4 border border-white/10 rounded-lg p-3">
                   <img src={item.image} alt={item.title} className="w-16 h-16 object-cover rounded" />
                   <div className="flex-1">
-                    <p className="font-medium">{item.title}</p>
-                    <p className="text-sm text-gray-500">₹{item.price} • Qty {item.quantity}</p>
+                    <p className="font-medium text-white">{item.title}</p>
+                    <p className="text-sm text-white/50">₹{item.price} • Qty {item.quantity}</p>
                   </div>
                   <div className="flex gap-2">
                     <button
                       type="button"
                       onClick={() => moveSavedToCart(item.productId)}
-                      className="text-sm px-3 py-1 rounded bg-green-600 text-white hover:bg-green-700"
+                      className="text-sm px-3 py-1 rounded bg-amber-300 text-black hover:bg-amber-200"
                     >
                       Move to cart
                     </button>
                     <button
                       type="button"
                       onClick={() => removeSavedItem(item.productId)}
-                      className="text-sm px-3 py-1 rounded border hover:bg-gray-50"
+                      className="text-sm px-3 py-1 rounded border border-white/10 text-white/70 hover:bg-white/5"
                     >
                       Remove
                     </button>
@@ -56,28 +56,28 @@ const CartList = () => {
         <CartItem key={item.productId} item={item} />
       ))}
       {!!savedItems.length && (
-        <div className="bg-white p-6 rounded-xl">
-          <h3 className="font-semibold mb-4">Saved for later ({savedItems.length})</h3>
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+          <h3 className="font-semibold mb-4 text-white">Saved for later ({savedItems.length})</h3>
           <div className="space-y-3">
             {savedItems.map((item) => (
-              <div key={item.productId} className="flex items-center gap-4 border rounded-lg p-3">
+              <div key={item.productId} className="flex items-center gap-4 border border-white/10 rounded-lg p-3">
                 <img src={item.image} alt={item.title} className="w-16 h-16 object-cover rounded" />
                 <div className="flex-1">
-                  <p className="font-medium">{item.title}</p>
-                  <p className="text-sm text-gray-500">₹{item.price} • Qty {item.quantity}</p>
+                  <p className="font-medium text-white">{item.title}</p>
+                  <p className="text-sm text-white/50">₹{item.price} • Qty {item.quantity}</p>
                 </div>
                 <div className="flex gap-2">
                   <button
                     type="button"
                     onClick={() => moveSavedToCart(item.productId)}
-                    className="text-sm px-3 py-1 rounded bg-green-600 text-white hover:bg-green-700"
+                    className="text-sm px-3 py-1 rounded bg-amber-300 text-black hover:bg-amber-200"
                   >
                     Move to cart
                   </button>
                   <button
                     type="button"
                     onClick={() => removeSavedItem(item.productId)}
-                    className="text-sm px-3 py-1 rounded border hover:bg-gray-50"
+                    className="text-sm px-3 py-1 rounded border border-white/10 text-white/70 hover:bg-white/5"
                   >
                     Remove
                   </button>
