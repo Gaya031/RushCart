@@ -260,7 +260,7 @@ export default function NavigationMap() {
       L.marker(dropLatLng).addTo(map).bindPopup(`Drop: ${mapPoints.drop.name || "Customer"}`);
 
       if (mapPoints.polyline.length > 1) {
-        const polyline = L.polyline(mapPoints.polyline, { color: "#16a34a", weight: 5 }).addTo(map);
+        const polyline = L.polyline(mapPoints.polyline, { color: "#38bdf8", weight: 5 }).addTo(map);
         map.fitBounds(polyline.getBounds(), { padding: [24, 24] });
       } else {
         map.fitBounds([pickupLatLng, dropLatLng], { padding: [24, 24] });
@@ -273,8 +273,8 @@ export default function NavigationMap() {
       ) {
         L.circleMarker([mapPoints.driver.lat, mapPoints.driver.lng], {
           radius: 7,
-          color: "#2563eb",
-          fillColor: "#3b82f6",
+          color: "#0284c7",
+          fillColor: "#38bdf8",
           fillOpacity: 0.95,
           weight: 2,
         })
@@ -297,15 +297,15 @@ export default function NavigationMap() {
   return (
     <RoleDashboardLayout role="delivery" title="Navigation Map">
       <div className="max-w-5xl space-y-4">
-        <div className="bg-white rounded-xl shadow p-4 flex flex-col md:flex-row gap-3 md:items-center md:justify-between">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-4 flex flex-col md:flex-row gap-3 md:items-center md:justify-between">
           <div>
-            <p className="font-medium">Select Delivery</p>
-            <p className="text-sm text-gray-500">Route is generated from live pickup/drop coordinates.</p>
+            <p className="font-medium text-white">Select Delivery</p>
+            <p className="text-sm text-white/60">Route is generated from live pickup/drop coordinates.</p>
           </div>
           <select
             value={deliveryId}
             onChange={(e) => setDeliveryId(e.target.value)}
-            className="border rounded-lg px-3 py-2"
+            className="border border-white/10 rounded-lg px-3 py-2 bg-white/5 text-white"
           >
             {!assignedRows.length && <option value="">No assigned deliveries</option>}
             {assignedRows.map((row) => (
@@ -316,33 +316,35 @@ export default function NavigationMap() {
           </select>
         </div>
 
-        {loading && <p className="text-sm text-gray-600">Loading route...</p>}
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {loading && <p className="text-sm text-white/60">Loading route...</p>}
+        {error && <p className="text-sm text-red-300">{error}</p>}
 
         {mapPoints && (
-          <div className="bg-white rounded-xl shadow p-4 space-y-3">
-            <div className="text-sm text-gray-700 flex flex-wrap gap-4">
-              <span><b>Pickup:</b> {mapPoints.pickup.name}</span>
-              <span><b>Drop:</b> {mapPoints.drop.name || "Customer"}</span>
-              {typeof mapPoints.distanceKm === "number" && <span><b>Distance:</b> {mapPoints.distanceKm.toFixed(2)} km</span>}
-              {typeof mapPoints.etaMinutes === "number" && <span><b>ETA:</b> {mapPoints.etaMinutes} min</span>}
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
+            <div className="text-sm text-white/70 flex flex-wrap gap-4">
+              <span><b className="text-white">Pickup:</b> {mapPoints.pickup.name}</span>
+              <span><b className="text-white">Drop:</b> {mapPoints.drop.name || "Customer"}</span>
+              {typeof mapPoints.distanceKm === "number" && <span><b className="text-white">Distance:</b> {mapPoints.distanceKm.toFixed(2)} km</span>}
+              {typeof mapPoints.etaMinutes === "number" && <span><b className="text-white">ETA:</b> {mapPoints.etaMinutes} min</span>}
               {mapPoints.driver?.updated_at && (
                 <span>
-                  <b>Driver Update:</b> {new Date(mapPoints.driver.updated_at).toLocaleTimeString()}
+                  <b className="text-white">Driver Update:</b> {new Date(mapPoints.driver.updated_at).toLocaleTimeString()}
                 </span>
               )}
             </div>
             <div className="flex items-center gap-3">
               <button
                 type="button"
-                className={`px-3 py-2 rounded text-sm ${sharing ? "bg-red-600 text-white" : "bg-blue-600 text-white"}`}
+                className={`px-3 py-2 rounded text-sm ${
+                  sharing ? "bg-red-500/20 text-red-200" : "bg-sky-300 text-black"
+                }`}
                 onClick={() => setSharing((s) => !s)}
               >
                 {sharing ? "Stop Live Sharing" : "Start Live Sharing"}
               </button>
-              <span className="text-xs text-gray-500">Live location is broadcast via Socket.IO.</span>
+              <span className="text-xs text-white/50">Live location is broadcast via Socket.IO.</span>
             </div>
-            <div ref={mapRef} className="h-[480px] rounded border" />
+            <div ref={mapRef} className="h-[480px] rounded border border-white/10" />
           </div>
         )}
       </div>

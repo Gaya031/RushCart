@@ -30,16 +30,16 @@ export default function AdminRefundControl() {
   return (
     <RoleDashboardLayout role="admin" title="Refund Control">
       <div className="max-w-5xl">
-        <div className="bg-white rounded-xl shadow p-4 space-y-3">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
           {rows.map((r) => (
-            <div key={r.id} className="border rounded p-3 flex justify-between items-center">
+            <div key={r.id} className="border border-white/10 rounded p-3 flex justify-between items-center text-white/70">
               <p>Order #{r.id}</p>
-              <button className="px-3 py-1 bg-purple-600 text-white rounded" onClick={() => refund(r.id)}>
+              <button className="px-3 py-1 bg-violet-300 text-black rounded" onClick={() => refund(r.id)}>
                 Initiate Refund
               </button>
             </div>
           ))}
-          {!rows.length && <p>No refunds pending.</p>}
+          {!rows.length && <p className="text-white/60">No refunds pending.</p>}
         </div>
       </div>
     </RoleDashboardLayout>

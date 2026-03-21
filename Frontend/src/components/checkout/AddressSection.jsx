@@ -110,12 +110,6 @@ const AddressSection = ({ onAddressSelect }) => {
             {savedAddress.state && `, ${savedAddress.state}`}
             {savedAddress.pincode && ` - ${savedAddress.pincode}`}
           </p>
-          {savedAddress.latitude && savedAddress.longitude && (
-            <div className="mt-2 text-xs text-white/50 flex items-center gap-1">
-              <MapPin className="w-3 h-3" />
-              {savedAddress.latitude}, {savedAddress.longitude}
-            </div>
-          )}
         </div>
       ) : (
         <div className="text-center py-8 text-white/60">
@@ -169,21 +163,7 @@ const AddressSection = ({ onAddressSelect }) => {
                   className="w-full border border-white/10 rounded-lg px-3 py-2 bg-white/5 text-white"
                   placeholder="Pincode"
                 />
-                <input
-                  type="text"
-                  value={formData.latitude}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, latitude: e.target.value }))}
-                  className="w-full border border-white/10 rounded-lg px-3 py-2 bg-white/5 text-white"
-                  placeholder="Latitude"
-                />
               </div>
-              <input
-                type="text"
-                value={formData.longitude}
-                onChange={(e) => setFormData((prev) => ({ ...prev, longitude: e.target.value }))}
-                className="w-full border border-white/10 rounded-lg px-3 py-2 bg-white/5 text-white"
-                placeholder="Longitude"
-              />
               <div className="flex gap-3 pt-1">
                 <button
                   type="button"

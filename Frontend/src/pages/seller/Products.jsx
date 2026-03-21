@@ -7,6 +7,7 @@ import {
   deleteProduct,
   uploadProductImage,
 } from "../../api/seller.api";
+import { getAllCategories } from "../../api/category.api";
 import { Plus, Edit, Package, Trash2 } from "lucide-react";
 import RoleDashboardLayout from "../../components/layouts/RoleDashboardLayout";
 
@@ -23,6 +24,9 @@ export default function SellerProducts() {
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [message, setMessage] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [categorySelection, setCategorySelection] = useState("custom");
+  const [categoryLoading, setCategoryLoading] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -37,6 +41,22 @@ export default function SellerProducts() {
 
   useEffect(() => {
     fetchProducts();
+  }, []);
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      setCategoryLoading(true);
+      try {
+        const res = await getAllCategories();
+        const rows = Array.isArray(res?.data) ? res.data : [];
+        setCategories(rows.filter((c) => c?.name));
+      } catch (err) {
+        setCategories([]);
+      } finally {
+        setCategoryLoading(false);
+      }
+    };
+    loadCategories();
   }, []);
 
   useEffect(() => {
@@ -76,12 +96,14 @@ export default function SellerProducts() {
         }
       }
 
+      const resolvedCategory =
+        categorySelection === "custom" ? formData.category : categorySelection;
       const data = {
         title: formData.title,
         description: formData.description,
         price: Number(formData.price),
         stock: Number(formData.stock),
-        category: formData.category,
+        category: resolvedCategory,
         images: imageUrl ? [imageUrl] : [],
       };
       
@@ -94,6 +116,7 @@ export default function SellerProducts() {
       setShowModal(false);
       setEditingProduct(null);
       setImageFile(null);
+      setCategorySelection("custom");
       setFormData({ title: "", description: "", price: "", stock: "", category: "", imageUrl: "" });
       fetchProducts();
     } catch (err) {
@@ -104,13 +127,20 @@ export default function SellerProducts() {
   };
 
   const handleEdit = (product) => {
+    const normalize = (value) => String(value || "").trim().toLowerCase();
+    const match = categories.find(
+      (cat) =>
+        normalize(cat.name) === normalize(product.category) ||
+        normalize(cat.slug) === normalize(product.category)
+    );
+    setCategorySelection(match?.name || "custom");
     setEditingProduct(product);
     setFormData({
       title: product.title || "",
       description: product.description || "",
       price: product.price?.toString() || "",
       stock: product.stock?.toString() || "",
-      category: product.category || "",
+      category: match ? match.name : product.category || "",
       imageUrl: product.images?.[0] || "",
     });
     setImageFile(null);
@@ -154,6 +184,7 @@ export default function SellerProducts() {
             onClick={() => {
               setEditingProduct(null);
               setImageFile(null);
+              setCategorySelection("custom");
               setFormData({ title: "", description: "", price: "", stock: "", category: "", imageUrl: "" });
               setShowModal(true);
             }}
@@ -288,12 +319,36 @@ export default function SellerProducts() {
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Category</label>
-                <input
-                  type="text"
-                  value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                <select
+                  value={categorySelection}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setCategorySelection(value);
+                    if (value !== "custom") {
+                      setFormData({ ...formData, category: value });
+                    }
+                  }}
                   className="w-full px-3 py-2 border border-white/10 rounded-lg bg-white/5 text-white"
-                />
+                >
+                  <option value="custom">Custom category</option>
+                  {categories.map((cat) => (
+                    <option key={cat.id || cat.slug || cat.name} value={cat.name}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+                {categorySelection === "custom" && (
+                  <input
+                    type="text"
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    className="mt-3 w-full px-3 py-2 border border-white/10 rounded-lg bg-white/5 text-white"
+                    placeholder="Enter category name"
+                  />
+                )}
+                {categoryLoading && (
+                  <p className="text-xs text-white/40 mt-2">Loading categories...</p>
+                )}
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Product Image</label>

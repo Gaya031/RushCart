@@ -116,8 +116,6 @@ export default function OrderTracking() {
             {tracking && (
               <div className="mt-6 border-t border-white/10 pt-4 text-sm text-white/70 space-y-1">
                 <p className="text-white">Live Driver Location</p>
-                <p>Latitude: {tracking.lat}</p>
-                <p>Longitude: {tracking.lng}</p>
                 {tracking.updated_at && <p>Updated: {new Date(tracking.updated_at).toLocaleTimeString()}</p>}
               </div>
             )}

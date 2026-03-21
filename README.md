@@ -1,38 +1,40 @@
 # RushCart
 
-Hyperlocal multi-vendor commerce platform with a production-oriented architecture.
+RushCart is a production-oriented hyperlocal, multi-vendor commerce platform. It combines a FastAPI backend, a React frontend, and a dedicated delivery microservice for live tracking.
 
-RushCart combines:
-- `Backend` (FastAPI + PostgreSQL + Redis + Elasticsearch)
-- `Frontend` (React + Vite + Tailwind + Zustand)
-- `Delivery-Service` (Node.js + Socket.IO microservice for live tracking + routing)
+## Highlights
 
-This repository is structured as a monorepo and is designed to run locally (service-by-service).
+- Role-based experience: buyer, seller, delivery partner, admin
+- Hyperlocal store discovery + fast checkout flow
+- Orders, delivery operations, returns/refunds, payouts
+- Elasticsearch-backed search with DB fallback
+- Image uploads via ImageKit CDN (URLs stored in DB)
+- No Alembic migrations (schema created on startup)
 
-## Table of Contents
+## Monorepo Structure
 
-- [Project Overview](#project-overview)
-- [Architecture](#architecture)
-- [Core Capabilities](#core-capabilities)
-- [Monorepo Structure](#monorepo-structure)
-- [Tech Stack](#tech-stack)
-- [Getting Started](#getting-started)
-- [Environment Configuration](#environment-configuration)
-- [Run Services Locally](#run-services-locally)
-- [Database Strategy (No Alembic)](#database-strategy-no-alembic)
-- [API Surface](#api-surface)
-- [Testing & Quality](#testing--quality)
-- [Security Posture](#security-posture)
-- [Uploads & Media Handling](#uploads--media-handling)
-
-## Project Overview
-
-RushCart is built to model real-world commerce workflows, not only demo CRUD:
-- Role-aware product experience (`buyer`, `seller`, `delivery`, `admin`)
-- Hyperlocal store discovery
-- Cart and checkout with guest-to-authenticated cart sync
-- Order lifecycle, delivery operations, returns, refunds, payout flows
-- Search and discovery with Elasticsearch-first strategy and DB fallback
+```
+E-Commerce/
+├── Backend/                 # FastAPI backend
+│   ├── app/
+│   │   ├── api/routes/      # Route modules by domain
+│   │   ├── services/        # Service-layer business logic
+│   │   ├── models/          # SQLAlchemy models
+│   │   ├── schemas/         # Pydantic schemas
+│   │   ├── core/            # Config, logging, security
+│   │   ├── db/              # Postgres/Redis/Mongo adapters
+│   │   └── utils/           # Upload, email, JWT, cache helpers
+│   ├── tests/
+│   └── uploads/
+├── Frontend/                # React app (Vite)
+│   └── src/
+│       ├── pages/           # Buyer/Seller/Admin/Delivery screens
+│       ├── api/             # Axios API clients
+│       ├── store/           # Zustand stores
+│       └── utils/           # Media URL resolvers and helpers
+├── Delivery-Service/        # Node.js + Socket.IO realtime service
+└── README.md
+```
 
 ## Architecture
 
@@ -46,85 +48,67 @@ flowchart LR
   D --> O["OSRM Public Routing API"]
 ```
 
-### Runtime Design Principles
-
-- Async backend (`FastAPI`, async SQLAlchemy, async Redis)
-- Stateless access tokens + Redis-backed refresh/session control
-- Backend-owned order integrity (pricing/product checks)
-- Frontend-first UX for cart, synced to backend after auth
-- API-first decomposition with a dedicated delivery realtime microservice
-
 ## Core Capabilities
 
 ### Buyer
-- Auth (register/login/refresh/logout/forgot/reset password)
-- Buyer home, product listing/detail, category pages, store pages
-- Cart (`localStorage` for guests + server sync for logged-in users)
+- Auth: register/login/refresh/logout + password reset
+- Home, product listing/detail, category pages, store pages
+- Cart (guest localStorage + sync after login)
 - Checkout, order placement, order details, cancel/return, order tracking
 - Wallet view, review submission
 
 ### Seller
-- Seller onboarding
-- KYC submission (including document upload)
+- Onboarding + KYC submission (file upload support)
 - Approval status flow
-- Product CRUD + product image upload
+- Product CRUD + image upload
 - Order management + status updates
 - Earnings, commission, subscription status
 
 ### Delivery Partner
 - Available deliveries feed
 - Claim/assigned delivery workflows
-- Pickup and delivery confirmation
-- Route context and navigation map support
-- Location tracking updates (via backend and realtime service fallback)
+- Pickup + delivery confirmation
+- Route context + navigation map
+- Location tracking updates
 - Earnings summary
 
 ### Admin
-- Seller decisioning and KYC workflow support
+- Seller approval + KYC review
 - User management (block/unblock)
 - Order monitoring
-- Return approvals and refund control
+- Return approvals + refund control
 - Commission configuration
-- Revenue analytics and report export
-- Banner management (homepage slider content)
+- Revenue analytics + reports
+- Banner management
+- Subscription plan management
 
-## Monorepo Structure
+## Buyer Order Flow
 
-```text
-E-Commerce/
-├── Backend/                 # FastAPI backend
-│   ├── app/
-│   │   ├── api/routes/      # Route modules by domain
-│   │   ├── services/        # Service-layer business logic
-│   │   ├── models/          # SQLAlchemy models
-│   │   ├── schemas/         # Pydantic schemas
-│   │   ├── core/            # Config, logging, security
-│   │   ├── db/              # Postgres/Redis/Mongo adapters
-│   │   └── utils/           # Upload, email, JWT, rate limiter, cache helpers
-│   ├── tests/               # Backend unit/integration tests
-│   ├── scripts/             # Local utilities
-│   └── uploads/             # Uploaded files
-├── Frontend/                # React app (Vite)
-│   └── src/
-│       ├── pages/           # Buyer/Seller/Admin/Delivery screens
-│       ├── api/             # Axios API clients
-│       ├── store/           # Zustand stores
-│       └── utils/           # Media URL resolvers and helpers
-├── Delivery-Service/        # Node.js + Socket.IO realtime service
-└── .github/                 # GitHub metadata
-```
+Browse → Add to Cart → Checkout → Place Order → Delivery Tracking
+
+## Subscription Flow
+
+1) Admin creates subscription plans
+- `POST /api/v1/subscriptions` (admin only)
+
+2) Seller views plans
+- `GET /api/v1/subscriptions`
+
+3) Seller activates plan
+- `POST /api/v1/subscriptions/activate/{plan_id}`
+
+If `ENFORCE_SELLER_SUBSCRIPTION=true`, product creation is blocked until a plan is active.
 
 ## Tech Stack
 
 ### Backend
-- FastAPI
-- SQLAlchemy (async) + asyncpg
+- FastAPI + async SQLAlchemy + asyncpg
 - PostgreSQL
 - Redis
 - Elasticsearch
-- JWT auth (`pyjwt` + JOSE helpers)
+- JWT auth
 - Razorpay integration
-- SMTP email sender
+- Gmail SMTP email sender
 
 ### Frontend
 - React + Vite
@@ -133,33 +117,20 @@ E-Commerce/
 - React Router
 - Axios
 - Swiper
-- Dynamic Leaflet integration (delivery map)
+- Leaflet (maps)
 
 ### Delivery Service
 - Node.js + Express
 - Socket.IO
-- CORS controls
-- OSRM route API integration
-
-## Getting Started
-
-### Prerequisites
-
-- Python 3.12+
-- Node.js 20+
-- PostgreSQL 16+
-- Redis 7+
-- Elasticsearch 8.x
+- OSRM routing
 
 ## Environment Configuration
 
-Create environment files before running locally.
+Create env files before running locally.
 
-### Backend `.env` (required)
+### Backend `.env`
 
-Add the following keys in `Backend/.env`:
-
-```env
+```
 APP_NAME=RushCart
 DEBUG=true
 API_V1_STR=/api/v1
@@ -177,7 +148,7 @@ REDIS_URL=redis://localhost:6379/0
 SECRET_KEY=replace-with-at-least-32-bytes-secret
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=15
-REFRESH_TOKEN_EXPIRE_DAYS=7
+REFRESH_TOKEN_EXPIRE_DAYS=30
 RESET_TOKEN_EXPIRE_MINUTES=30
 JWT_ISSUER=rushcart-auth
 JWT_MIN_SECRET_LENGTH=32
@@ -200,7 +171,7 @@ ELASTICSEARCH_STORES_INDEX=rushcart_stores
 ELASTICSEARCH_TIMEOUT_SECONDS=5
 
 EMAILS_ENABLED=false
-SMTP_HOST=
+SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USERNAME=
 SMTP_PASSWORD=
@@ -217,22 +188,21 @@ ADMIN_NAME=RushCart Admin
 IMAGEKIT_PUBLIC_KEY=
 IMAGEKIT_PRIVATE_KEY=
 IMAGEKIT_URL_ENDPOINT=
+
+GOOGLE_CLIENT_ID=
 ```
 
-### Frontend `.env` (optional but recommended)
+### Frontend `.env`
 
-Create `Frontend/.env`:
-
-```env
+```
 VITE_API_URL=http://localhost:8000/api/v1
 VITE_DELIVERY_SERVICE_URL=http://localhost:4001
+VITE_GOOGLE_CLIENT_ID=
 ```
 
-### Delivery Service `.env` (optional)
+### Delivery Service `.env`
 
-Create `Delivery-Service/.env`:
-
-```env
+```
 PORT=4001
 ALLOWED_ORIGINS=http://localhost:5173
 ```
@@ -240,12 +210,13 @@ ALLOWED_ORIGINS=http://localhost:5173
 ## Run Services Locally
 
 ### 1) Start infra dependencies
-
-Run PostgreSQL, Redis, Elasticsearch locally.
+- PostgreSQL
+- Redis
+- Elasticsearch
 
 ### 2) Backend
 
-```bash
+```
 cd Backend
 python -m venv venv
 source venv/bin/activate
@@ -255,7 +226,7 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 ### 3) Frontend
 
-```bash
+```
 cd Frontend
 npm install
 npm run dev
@@ -263,7 +234,7 @@ npm run dev
 
 ### 4) Delivery Service
 
-```bash
+```
 cd Delivery-Service
 npm install
 npm run dev
@@ -273,19 +244,17 @@ npm run dev
 
 This project intentionally does **not** use Alembic migrations.
 
-Current strategy:
-- Schema is created on startup via `Base.metadata.create_all()` in backend initialization.
-- A lightweight startup migration helper normalizes old geo columns (`users/sellers latitude/longitude`) if stored as string, converting them to `DOUBLE PRECISION`.
+Current behavior:
+- Schema is created on startup via `Base.metadata.create_all()`.
 - Default admin user is seeded on startup using `ADMIN_EMAIL` / `ADMIN_PASSWORD`.
 
-Production note:
-- For large-scale controlled schema evolution, replace/augment this with versioned migration governance.
+Production note: for controlled schema evolution, introduce a migration workflow.
 
 ## API Surface
 
 Base prefix: `/api/v1`
 
-### Major route groups
+Major route groups:
 - Auth: `/auth/*`
 - Users: `/users/*`
 - Sellers: `/sellers/*`
@@ -305,85 +274,37 @@ Base prefix: `/api/v1`
 - Cart: `/cart/*`
 - Banners: `/banners/*`
 
-OpenAPI docs:
+OpenAPI:
 - Swagger UI: `/docs`
 - ReDoc: `/redoc`
 
-## Testing & Quality
+## Search
 
-### Backend tests
+- Primary: Elasticsearch
+- Fallback: DB search when ES is unavailable
 
-```bash
-cd Backend
-pytest -q
-```
+## Uploads & Media
 
-Coverage command used in CI:
+- Product images and KYC documents are uploaded via ImageKit (when keys are set).
+- Image URLs are stored in the database.
 
-```bash
-pytest -q --cov=app --cov-report=term-missing --cov-fail-under=8
-```
+## Troubleshooting
 
-Current test modules include:
-- File upload validation
-- Email template/config checks
-- Delivery helper logic fallback behavior
+- **Active subscription required** when creating products
+  - Create a plan as admin → seller activates plan → create products
+  - Or set `ENFORCE_SELLER_SUBSCRIPTION=false` in dev
 
-### Frontend quality
+- **Category page empty**
+  - Ensure products have valid `category` values
+  - Categories are derived from product data
 
-```bash
-cd Frontend
-npm run lint
-npm run build
-```
-
-### Delivery service quality
-
-```bash
-cd Delivery-Service
-node --check src/server.js
-```
-
-## Security Posture
-
-Implemented controls:
-- JWT auth with minimum secret-length guard
-- Refresh token lifecycle + revocation via Redis
-- Role-based authorization checks
-- Security headers middleware (CSP, XFO, COOP, CORP, etc.)
-- CORS and trusted host controls
-- Per-route rate limiting in critical endpoints
-- File upload type/size/path validation
-- CI security workflows:
-  - `bandit`
-  - `pip-audit`
-  - `npm audit`
-  - `trivy` filesystem scan
-
-## Uploads & Media Handling
-
-Backend serves uploaded assets from:
-- `/uploads/*`
-
-Default local upload directory:
-- `Backend/uploads/`
-
-Supported image formats include:
-- `.jpg`, `.jpeg`, `.png`, `.webp`, `.gif`, `.heic`, `.heif`, `.avif`
-
-KYC documents currently allow:
-- `.pdf`
-
-Image uploads are stored on ImageKit CDN when `IMAGEKIT_*` env vars are set.
-
-Frontend media resolver normalizes:
-- absolute URLs
-- `/uploads/...` relative paths
-- image filename-only values to product upload paths
+- **Delivery map/route errors**
+  - Ensure Delivery-Service is running on port 4001
+  - Verify `VITE_DELIVERY_SERVICE_URL`
 
 ---
 
-For sub-project specifics:
-- Backend implementation details: `Backend/`
-- Frontend implementation details: `Frontend/`
-- Delivery realtime service details: `Delivery-Service/README.md`
+For deeper implementation details:
+- Backend: `Backend/`
+- Frontend: `Frontend/`
+- Delivery service: `Delivery-Service/`

@@ -81,39 +81,39 @@ export default function AvailableDeliveries() {
   return (
     <RoleDashboardLayout role="delivery" title="Available Deliveries">
       <div className="max-w-4xl">
-        <div className="bg-white rounded-xl shadow p-4 space-y-3">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
           <div className="flex justify-end">
             <button
               type="button"
               onClick={loadRows}
-              className="text-xs px-3 py-1 border rounded hover:bg-gray-50"
+              className="text-xs px-3 py-1 border border-white/10 rounded text-white/70 hover:bg-white/5"
             >
               Refresh
             </button>
           </div>
-          {error && <p className="text-sm text-red-600">{error}</p>}
-          {loading && <p>Loading...</p>}
+          {error && <p className="text-sm text-red-300">{error}</p>}
+          {loading && <p className="text-white/60">Loading...</p>}
           {rows.map((r) => (
-            <div key={r.id ?? `order-${r.order_id}`} className="border rounded p-3">
-              <p>{r?.id ? `Delivery #${r.id}` : "Open Delivery Request"}</p>
+            <div key={r.id ?? `order-${r.order_id}`} className="border border-white/10 rounded p-3 text-white/70">
+              <p className="text-white">{r?.id ? `Delivery #${r.id}` : "Open Delivery Request"}</p>
               <p className="text-sm">Order #{r.order_id} • {r.status}</p>
-              <p className="text-xs text-gray-600 mt-1">
+              <p className="text-xs text-white/50 mt-1">
                 Pickup: {r?.pickup?.address || r?.pickup?.name || "Not available"}
               </p>
-              <p className="text-xs text-gray-600">
+              <p className="text-xs text-white/50">
                 Drop: {r?.drop?.address || r?.drop?.city || r?.drop?.name || "Not available"}
               </p>
               <div className="flex gap-3 text-sm mt-2">
                 {r?.id ? (
                   <>
-                    <Link to={`/delivery/map?deliveryId=${r.id}`} className="text-green-700 hover:text-green-800">
+                    <Link to={`/delivery/map?deliveryId=${r.id}`} className="text-sky-200 hover:text-sky-100">
                       Open Navigation
                     </Link>
                     <button
                       type="button"
                       onClick={() => updateMyLocation(r)}
                       disabled={updatingId === r.id}
-                      className="text-blue-700 hover:text-blue-800 disabled:opacity-60"
+                      className="text-sky-200 hover:text-sky-100 disabled:opacity-60"
                     >
                       {updatingId === r.id ? "Updating..." : "Update My Location"}
                     </button>
@@ -123,7 +123,7 @@ export default function AvailableDeliveries() {
                     type="button"
                     onClick={() => handleClaim(r.order_id)}
                     disabled={claimingOrderId === r.order_id}
-                    className="text-green-700 hover:text-green-800 disabled:opacity-60"
+                    className="text-sky-200 hover:text-sky-100 disabled:opacity-60"
                   >
                     {claimingOrderId === r.order_id ? "Claiming..." : "Claim Delivery"}
                   </button>
@@ -131,7 +131,7 @@ export default function AvailableDeliveries() {
               </div>
             </div>
           ))}
-          {!loading && !rows.length && <p>No available deliveries.</p>}
+          {!loading && !rows.length && <p className="text-white/60">No available deliveries.</p>}
         </div>
       </div>
     </RoleDashboardLayout>

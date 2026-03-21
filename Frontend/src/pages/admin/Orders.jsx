@@ -35,13 +35,13 @@ export default function AdminOrders() {
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
       case "delivered":
-        return "bg-green-100 text-green-800";
+        return "bg-emerald-300/20 text-emerald-200";
       case "cancelled":
-        return "bg-red-100 text-red-800";
+        return "bg-red-500/20 text-red-200";
       case "refunded":
-        return "bg-gray-100 text-gray-800";
+        return "bg-white/10 text-white/70";
       default:
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-amber-300/20 text-amber-200";
     }
   };
 
@@ -53,7 +53,7 @@ export default function AdminOrders() {
     return (
       <RoleDashboardLayout role="admin" title="Order Monitoring">
         <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-300"></div>
         </div>
       </RoleDashboardLayout>
     );
@@ -62,7 +62,7 @@ export default function AdminOrders() {
   return (
     <RoleDashboardLayout role="admin" title="Order Monitoring">
         <div className="flex items-center gap-2 mb-6">
-          <ShoppingBag className="w-8 h-8 text-purple-600" />
+          <ShoppingBag className="w-8 h-8 text-violet-200" />
         </div>
 
         {/* Filter */}
@@ -73,8 +73,8 @@ export default function AdminOrders() {
               onClick={() => setFilter(status)}
               className={`px-4 py-2 rounded-lg capitalize ${
                 filter === status 
-                  ? "bg-green-600 text-white" 
-                  : "bg-white text-gray-600 hover:bg-gray-100"
+                  ? "bg-violet-300 text-black" 
+                  : "bg-white/5 text-white/70 hover:bg-white/10"
               }`}
             >
               {status}
@@ -83,43 +83,43 @@ export default function AdminOrders() {
         </div>
 
         {filteredOrders.length === 0 ? (
-          <div className="bg-white rounded-lg shadow p-8 text-center">
-            <ShoppingBag className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-            <h2 className="text-xl font-semibold mb-2">No orders found</h2>
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-8 text-center">
+            <ShoppingBag className="w-16 h-16 mx-auto text-white/30 mb-4" />
+            <h2 className="text-xl font-semibold mb-2 text-white">No orders found</h2>
           </div>
         ) : (
           <div className="space-y-4">
             {filteredOrders.map((order) => (
-              <div key={order.id} className="bg-white rounded-lg shadow p-4">
+              <div key={order.id} className="rounded-2xl border border-white/10 bg-white/5 p-4">
                 <div className="flex items-center justify-between mb-4">
                   <div>
-                    <p className="text-sm text-gray-500">Order ID</p>
-                    <p className="font-semibold">#{order.id}</p>
+                    <p className="text-sm text-white/50">Order ID</p>
+                    <p className="font-semibold text-white">#{order.id}</p>
                   </div>
                   <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}>
                     {order.status || "Processing"}
                   </span>
                 </div>
 
-                <div className="border-t pt-4">
-                  <p className="text-sm text-gray-500 mb-2">Items</p>
+                <div className="border-t border-white/10 pt-4">
+                  <p className="text-sm text-white/50 mb-2">Items</p>
                   <div className="space-y-2">
                     {order.items?.map((item, idx) => (
-                      <div key={idx} className="flex justify-between text-sm">
+                      <div key={idx} className="flex justify-between text-sm text-white/70">
                         <span>Product #{item.product_id} x {item.quantity}</span>
-                        <span className="font-medium">₹{item.price * item.quantity}</span>
+                        <span className="font-medium text-white">₹{item.price * item.quantity}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="border-t pt-4 mt-4 flex justify-between items-center">
-                  <p className="text-xl font-bold">₹{order.total_amount || order.total}</p>
+                <div className="border-t border-white/10 pt-4 mt-4 flex justify-between items-center">
+                  <p className="text-xl font-bold text-white">₹{order.total_amount || order.total}</p>
                   <div className="flex gap-2">
                     {["delivered", "cancelled", "packed", "shipped"].includes((order.status || "").toLowerCase()) && (
                       <button 
                         onClick={() => handleRefund(order.id)}
-                        className="flex items-center gap-1 px-3 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200"
+                        className="flex items-center gap-1 px-3 py-1 bg-red-500/20 text-red-200 rounded hover:bg-red-500/30"
                       >
                         <RefreshCw className="w-4 h-4" /> Refund
                       </button>

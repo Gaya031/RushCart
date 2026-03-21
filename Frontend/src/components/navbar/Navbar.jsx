@@ -14,16 +14,10 @@ export default function Navbar() {
   const cartItemsCount = useCartStore((s) => s.items.length);
   const navigate = useNavigate();
   const isBuyerContext = !user || user.role === "buyer";
-  const headerClass = isBuyerContext
-    ? "bg-[#0b0b0b]/90 border-b border-white/10 text-white backdrop-blur"
-    : "bg-white border-b";
-  const brandClass = isBuyerContext
-    ? "text-amber-300 hover:text-amber-200"
-    : "text-green-600 hover:text-green-700";
-  const ghostButtonClass = isBuyerContext ? "text-white/80 hover:text-white" : "";
-  const outlineButtonClass = isBuyerContext
-    ? "border-white/20 text-white/80 hover:text-white hover:bg-white/10"
-    : "";
+  const headerClass = "bg-[#0b0b0b]/90 border-b border-white/10 text-white backdrop-blur";
+  const brandClass = "text-amber-300 hover:text-amber-200";
+  const ghostButtonClass = "text-white/80 hover:text-white";
+  const outlineButtonClass = "border-white/20 text-white/80 hover:text-white hover:bg-white/10";
 
   return (
     <header className={`sticky top-0 z-50 ${headerClass}`}>

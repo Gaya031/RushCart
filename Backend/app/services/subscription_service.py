@@ -35,7 +35,7 @@ async def activate_seller_subscription(db: AsyncSession, user_id: int, plan_id: 
     if not plan or not plan.active:
         raise NotFoundException("Subscription plan not found")
 
-    now = datetime.now(timezone.utc)
+    now = datetime.utcnow()
     seller.subscription_plan_id = plan.id
     seller.subscription_expiry = now + timedelta(days=plan.duration_days)
     seller.commission_percent = plan.commission_percent

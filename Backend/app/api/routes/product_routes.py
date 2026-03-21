@@ -78,10 +78,17 @@ async def products(
     page: int = Query(1, ge=1),
     size: int = Query(50, ge=1, le=200),
     include_inactive: bool = Query(False),
+    category: str | None = Query(None, description="Filter by category slug or name"),
     db: AsyncSession = Depends(get_db),
 ):
     skip = (page - 1) * size
-    return await get_products(db=db, skip=skip, limit=size, only_active=not include_inactive)
+    return await get_products(
+        db=db,
+        skip=skip,
+        limit=size,
+        only_active=not include_inactive,
+        category=category,
+    )
 
 
 @router.get("/mine", response_model=list[ProductOut])

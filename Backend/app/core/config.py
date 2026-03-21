@@ -59,9 +59,12 @@ class Settings(BaseSettings):
     IMAGEKIT_PRIVATE_KEY: str = ""
     IMAGEKIT_URL_ENDPOINT: str = ""
 
-    # Email
+    # Google OAuth
+    GOOGLE_CLIENT_ID: str = ""
+
+    # Email (Gmail SMTP)
     EMAILS_ENABLED: bool = False
-    SMTP_HOST: str = ""
+    SMTP_HOST: str = "smtp.gmail.com"
     SMTP_PORT: int = 587
     SMTP_USERNAME: str = ""
     SMTP_PASSWORD: str = ""
@@ -76,6 +79,7 @@ class Settings(BaseSettings):
     ADMIN_PASSWORD: str
     ADMIN_NAME: str = "RushCart Admin"
 
+
     @property
     def cors_origins(self) -> list[str]:
         return _split_csv(self.CORS_ORIGINS)
@@ -84,7 +88,7 @@ class Settings(BaseSettings):
     def trusted_hosts(self) -> list[str]:
         return _split_csv(self.TRUSTED_HOSTS)
 
-    model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
+    model_config = {"env_file": ".env", "env_file_encoding": "utf-8", "extra": "ignore"}
 
 
 settings = Settings()

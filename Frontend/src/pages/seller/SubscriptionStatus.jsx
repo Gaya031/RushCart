@@ -40,37 +40,37 @@ export default function SellerSubscriptionStatus() {
   return (
     <RoleDashboardLayout role="seller" title="Subscription Status">
       <div className="max-w-4xl">
-        {error && <p className="text-sm text-red-600 mb-3">{error}</p>}
+        {error && <p className="text-sm text-red-300 mb-3">{error}</p>}
         <div className="grid md:grid-cols-2 gap-4">
-          <div className="bg-white rounded-xl shadow p-6">
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-white/70">
             {!status ? (
-              <p>Loading status...</p>
+              <p className="text-white/60">Loading status...</p>
             ) : (
               <>
-                <p>Plan ID: <b>{status.subscription_plan_id || "None"}</b></p>
-                <p>Expiry: <b>{status.subscription_expiry || "N/A"}</b></p>
-                <p>Approved: <b>{String(status.approved)}</b></p>
+                <p>Plan ID: <b className="text-white">{status.subscription_plan_id || "None"}</b></p>
+                <p>Expiry: <b className="text-white">{status.subscription_expiry || "N/A"}</b></p>
+                <p>Approved: <b className="text-white">{String(status.approved)}</b></p>
               </>
             )}
           </div>
-          <div className="bg-white rounded-xl shadow p-6">
-            <h2 className="font-semibold mb-2">Available Plans</h2>
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+            <h2 className="font-semibold mb-2 text-white">Available Plans</h2>
             {plans.length ? plans.map((p) => (
-              <div key={p.id} className="border-b py-2">
-                <p className="font-medium">{p.plan_name}</p>
-                <p className="text-sm text-gray-500">₹{p.price}</p>
-                <p className="text-xs text-gray-500">
+              <div key={p.id} className="border-b border-white/10 py-2">
+                <p className="font-medium text-white">{p.plan_name}</p>
+                <p className="text-sm text-white/60">₹{p.price}</p>
+                <p className="text-xs text-white/50">
                   {p.duration_days} days | Commission {p.commission_percent}%
                 </p>
                 <button
-                  className="mt-2 text-sm bg-green-600 text-white px-3 py-1 rounded disabled:opacity-50"
+                  className="mt-2 text-sm bg-emerald-300 text-black px-3 py-1 rounded disabled:opacity-50"
                   onClick={() => onActivate(p.id)}
                   disabled={activatingPlanId === p.id}
                 >
                   {activatingPlanId === p.id ? "Activating..." : "Activate Plan"}
                 </button>
               </div>
-            )) : <p>No plans available</p>}
+            )) : <p className="text-white/60">No plans available</p>}
           </div>
         </div>
       </div>

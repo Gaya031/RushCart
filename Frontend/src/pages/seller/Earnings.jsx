@@ -12,11 +12,11 @@ export default function SellerEarnings() {
     <RoleDashboardLayout role="seller" title="Seller Earnings Summary">
       <div className="max-w-3xl">
         {!data ? (
-          <p>Loading...</p>
+          <p className="text-white/60">Loading...</p>
         ) : (
-          <div className="bg-white rounded-xl shadow p-6">
-            <p>Completed Orders: <b>{data.completed_orders}</b></p>
-            <p>Gross Revenue: <b>₹{data.gross_revenue}</b></p>
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-white/70">
+            <p>Completed Orders: <b className="text-white">{data.completed_orders}</b></p>
+            <p>Gross Revenue: <b className="text-white">₹{data.gross_revenue}</b></p>
           </div>
         )}
       </div>

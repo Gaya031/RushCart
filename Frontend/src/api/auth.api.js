@@ -21,3 +21,6 @@ export const forgotPassword = (email) =>
 
 export const resetPassword = (token, newPassword) =>
   api.post("/auth/reset-password", { token, new_password: newPassword });
+
+export const googleLogin = (payload) =>
+  api.post("/auth/google", payload);

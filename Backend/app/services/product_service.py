@@ -155,13 +155,44 @@ async def delete_product(db: AsyncSession, product_id: int, user_id: int) -> boo
     await cache_delete_prefix("stores:")
     return True
 
-async def get_products(db: AsyncSession, skip: int = 0, limit: int = 50, only_active: bool = True):
-    query = select(Product).offset(skip).limit(limit)
+def _slugify_category(value: str | None) -> str:
+    if not value:
+        return ""
+    text = str(value).strip().lower()
+    out = []
+    prev_dash = False
+    for ch in text:
+        if ch.isalnum():
+            out.append(ch)
+            prev_dash = False
+        else:
+            if not prev_dash:
+                out.append("-")
+                prev_dash = True
+    return "".join(out).strip("-")
+
+
+async def get_products(
+    db: AsyncSession,
+    skip: int = 0,
+    limit: int = 50,
+    only_active: bool = True,
+    category: str | None = None,
+):
+    query = select(Product)
     if only_active:
-        query = query.where(Product.is_active == True)
+        query = query.where(Product.is_active.is_(True))
+    if category:
+        query = query.where(Product.category.is_not(None))
+
     result = await db.execute(query.order_by(Product.created_at.desc()))
-    product = result.scalars().all()
-    return product
+    products = result.scalars().all()
+
+    if category:
+        target = _slugify_category(category)
+        products = [p for p in products if _slugify_category(p.category) == target]
+
+    return products[skip : skip + limit]
 
     """Get featured products - returns products with stock > 0"""
 

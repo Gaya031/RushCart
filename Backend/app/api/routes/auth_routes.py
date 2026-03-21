@@ -8,6 +8,7 @@ from app.schemas.auth_schema import (
     RefreshTokenIn,
     ForgotPasswordIn,
     ResetPasswordIn,
+    GoogleTokenIn,
 )
 from app.db.postgres import get_db
 from app.services.auth_service import (
@@ -19,6 +20,7 @@ from app.services.auth_service import (
     get_user_by_email,
     request_password_reset,
     reset_password,
+    authenticate_google_user,
 )
 from app.api.deps.auth_deps import get_current_user
 from app.models.user_model import User
@@ -32,9 +34,11 @@ register_rate_limit = RateLimiter(limit=3, window_seconds=300, key_prefix="regis
 @router.post("/register", dependencies=[Depends(register_rate_limit)], response_model=UserOut, status_code=status.HTTP_201_CREATED)
 async def register(user_in: UserCreate, db: AsyncSession = Depends(get_db)):
     existing = await get_user_by_email(db, user_in.email)
+    print(existing)
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
     user = await create_user(db, user_in)
+    print(user)
     subject, body = welcome_email(user.name)
     send_email_background(user.email, subject, body)
     return user
@@ -47,6 +51,27 @@ async def login(data: UserIn, db: AsyncSession = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=401, detail="Invalid Credentials")
     access, refresh = await create_tokens_for_user(db, user)
+    return {"access_token": access, "refresh_token": refresh, "token_type": "bearer"}
+
+
+google_rate_limit = RateLimiter(limit=5, window_seconds=60, key_prefix="google-login")
+@router.post("/google", dependencies=[Depends(google_rate_limit)], response_model=TokenPair)
+async def google_login(data: GoogleTokenIn, db: AsyncSession = Depends(get_db)):
+
+    print("GOOGLE_AUTH request", {
+        "role": data.role,
+        "has_token": bool(data.id_token),
+    })
+    if data.role == "admin":
+        print("GOOGLE_AUTH blocked: admin role")
+        raise HTTPException(status_code=403, detail="Google sign-in not allowed for admin role")
+    user = await authenticate_google_user(
+        db,
+        data.id_token,
+        data.role,
+    )
+    access, refresh = await create_tokens_for_user(db, user)
+    print("GOOGLE_AUTH success", {"user_id": user.id, "role": user.role})
     return {"access_token": access, "refresh_token": refresh, "token_type": "bearer"}
 
 
@@ -81,3 +106,4 @@ async def reset_password_route(data: ResetPasswordIn, db: AsyncSession = Depends
     if not ok:
         raise HTTPException(status_code=400, detail="Invalid or expired reset token")
     return {"message": "Password reset successful"}
+

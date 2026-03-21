@@ -50,12 +50,22 @@ async def create_order(db: AsyncSession, buyer_id: int, payload) -> Order:
             )
         )
 
+    buyer = await db.get(User, buyer_id)
+    address_payload = payload.address.model_dump()
+    name_value = str(address_payload.get("name") or "").strip()
+    if not name_value or name_value.lower() in {"customer", "buyer", "user"}:
+        if buyer and buyer.name:
+            address_payload["name"] = buyer.name
+    phone_value = str(address_payload.get("phone") or "").strip()
+    if (not phone_value or phone_value == "9999999999") and buyer and buyer.phone:
+        address_payload["phone"] = buyer.phone
+
     order = Order(
         buyer_id=buyer_id,
         seller_id=payload.seller_id,
         total_amount=int(total),
         payment_method=payload.payment_method,
-        address=payload.address.model_dump(),
+        address=address_payload,
     )
 
     db.add(order)

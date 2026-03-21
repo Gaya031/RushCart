@@ -30,17 +30,17 @@ export default function AdminReturnApproval() {
   return (
     <RoleDashboardLayout role="admin" title="Return Approval">
       <div className="max-w-5xl">
-        <div className="bg-white rounded-xl shadow p-4 space-y-3">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
           {rows.map((r) => (
-            <div key={r.id} className="border rounded p-3 flex justify-between items-center">
+            <div key={r.id} className="border border-white/10 rounded p-3 flex justify-between items-center text-white/70">
               <p>Order #{r.id}</p>
               <div className="space-x-2">
-                <button className="px-3 py-1 bg-green-600 text-white rounded" onClick={() => decide(r.id, true)}>Approve</button>
-                <button className="px-3 py-1 bg-red-600 text-white rounded" onClick={() => decide(r.id, false)}>Reject</button>
+                <button className="px-3 py-1 bg-emerald-300 text-black rounded" onClick={() => decide(r.id, true)}>Approve</button>
+                <button className="px-3 py-1 bg-red-500/20 text-red-200 rounded" onClick={() => decide(r.id, false)}>Reject</button>
               </div>
             </div>
           ))}
-          {!rows.length && <p>No pending returns.</p>}
+          {!rows.length && <p className="text-white/60">No pending returns.</p>}
         </div>
       </div>
     </RoleDashboardLayout>

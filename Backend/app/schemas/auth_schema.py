@@ -1,11 +1,9 @@
 from pydantic import BaseModel, EmailStr, Field
-from typing import Optional
 from app.models.user_model import UserRole
 
 class UserCreate(BaseModel):
     name: str
     email: EmailStr
-    phone: Optional[str]
     password: str = Field(min_length=8)
     role: UserRole = UserRole.buyer
 
@@ -17,7 +15,6 @@ class UserOut(BaseModel):
     id: int
     name: str
     email: EmailStr
-    phone: Optional[str]
     role: UserRole
     wallet_balance: int
     
@@ -46,4 +43,9 @@ class ResetPasswordIn(BaseModel):
 class TokenPayload(BaseModel):
     sub: int
     exp: int
+
+
+class GoogleTokenIn(BaseModel):
+    id_token: str
+    role: UserRole = UserRole.buyer
     

@@ -20,11 +20,11 @@ export default function AdminCommissionConfig() {
   return (
     <RoleDashboardLayout role="admin" title="Commission Configuration">
       <div className="max-w-xl">
-        <form onSubmit={submit} className="bg-white rounded-xl shadow p-6 space-y-4">
-          <input className="w-full border rounded px-3 py-2" placeholder="Seller ID" value={sellerId} onChange={(e)=>setSellerId(e.target.value)} required />
-          <input className="w-full border rounded px-3 py-2" placeholder="Commission %" value={percent} onChange={(e)=>setPercent(e.target.value)} required />
-          <button className="w-full bg-gray-900 text-white py-2 rounded">Update</button>
-          {message && <p className="text-sm">{message}</p>}
+        <form onSubmit={submit} className="rounded-2xl border border-white/10 bg-white/5 p-6 space-y-4">
+          <input className="w-full border border-white/10 rounded px-3 py-2 bg-white/5 text-white" placeholder="Seller ID" value={sellerId} onChange={(e)=>setSellerId(e.target.value)} required />
+          <input className="w-full border border-white/10 rounded px-3 py-2 bg-white/5 text-white" placeholder="Commission %" value={percent} onChange={(e)=>setPercent(e.target.value)} required />
+          <button className="w-full bg-violet-300 text-black py-2 rounded">Update</button>
+          {message && <p className="text-sm text-white/70">{message}</p>}
         </form>
       </div>
     </RoleDashboardLayout>

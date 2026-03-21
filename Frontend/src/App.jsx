@@ -50,6 +50,7 @@ const AdminUserManagement = lazy(() => import("./pages/admin/UserManagement"));
 const AdminReturnApproval = lazy(() => import("./pages/admin/ReturnApproval"));
 const AdminRefundControl = lazy(() => import("./pages/admin/RefundControl"));
 const AdminCommissionConfig = lazy(() => import("./pages/admin/CommissionConfig"));
+const AdminSubscriptions = lazy(() => import("./pages/admin/Subscriptions"));
 const AdminRevenueAnalytics = lazy(() => import("./pages/admin/RevenueAnalytics"));
 const AdminReportsExports = lazy(() => import("./pages/admin/ReportsExports"));
 const AdminBanners = lazy(() => import("./pages/admin/Banners"));
@@ -335,6 +336,16 @@ function App() {
             <ProtectedRoute>
               <RoleRoute role="admin">
                 <AdminCommissionConfig />
+              </RoleRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/subscriptions"
+          element={
+            <ProtectedRoute>
+              <RoleRoute role="admin">
+                <AdminSubscriptions />
               </RoleRoute>
             </ProtectedRoute>
           }

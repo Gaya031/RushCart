@@ -63,43 +63,43 @@ export default function SellerKYCUpload() {
     <RoleDashboardLayout role="seller" title="Seller KYC Upload">
       <div className="max-w-xl">
         {loading ? (
-          <p>Loading...</p>
+          <p className="text-white/60">Loading...</p>
         ) : !hasProfile ? (
-          <div className="bg-white p-6 rounded-xl shadow">
-            <p className="text-sm text-gray-700">Create your seller profile first from onboarding page.</p>
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+            <p className="text-sm text-white/70">Create your seller profile first from onboarding page.</p>
           </div>
         ) : (
-          <form onSubmit={submit} className="bg-white p-6 rounded-xl shadow space-y-4">
+          <form onSubmit={submit} className="rounded-2xl border border-white/10 bg-white/5 p-6 space-y-4">
             {DOC_FIELDS.map((field) => (
-              <div key={field.key} className="space-y-2 border rounded-lg p-3">
-                <label className="block text-sm font-medium">{field.label}</label>
+              <div key={field.key} className="space-y-2 border border-white/10 rounded-lg p-3">
+                <label className="block text-sm font-medium text-white">{field.label}</label>
                 <input
                   type="file"
                   accept="image/*,.pdf"
-                  className="w-full border rounded px-3 py-2"
+                  className="w-full border border-white/10 rounded px-3 py-2 bg-white/5 text-white"
                   onChange={(e) =>
                     setFiles((prev) => ({ ...prev, [field.key]: e.target.files?.[0] || null }))
                   }
                 />
                 {files[field.key] && (
-                  <p className="text-xs text-gray-600">Selected: {files[field.key].name}</p>
+                  <p className="text-xs text-white/60">Selected: {files[field.key].name}</p>
                 )}
                 {docs[field.key] && (
                   <a
                     href={docs[field.key]}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-xs text-blue-600 hover:underline"
+                    className="text-xs text-emerald-200 hover:underline"
                   >
                     View current {field.label} document
                   </a>
                 )}
               </div>
             ))}
-            <button disabled={saving} className="w-full bg-blue-600 text-white py-2 rounded disabled:opacity-70">
+            <button disabled={saving} className="w-full bg-emerald-300 text-black py-2 rounded disabled:opacity-70">
               {saving ? "Uploading..." : "Upload KYC Documents"}
             </button>
-            {message && <p className="text-sm">{message}</p>}
+            {message && <p className="text-sm text-white/70">{message}</p>}
           </form>
         )}
       </div>

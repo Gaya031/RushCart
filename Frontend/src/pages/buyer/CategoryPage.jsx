@@ -4,7 +4,15 @@ import { useParams } from "react-router-dom";
 import Footer from "../../components/footer/Footer";
 import Navbar from "../../components/navbar/Navbar";
 import ProductCard from "../../components/product/ProductCard";
-import { getCategoryBySlug, getCategoryProducts } from "../../api/category.api";
+import { getCategoryBySlug } from "../../api/category.api";
+import { getAllProducts } from "../../api/product.api";
+
+const titleFromSlug = (value) =>
+  String(value || "")
+    .split("-")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
 
 export default function CategoryPage() {
   const { slug } = useParams();
@@ -19,11 +27,20 @@ export default function CategoryPage() {
       setLoading(true);
       setError("");
       try {
-        const categoryRes = await getCategoryBySlug(slug);
-        if (!mounted) return;
-        setCategory(categoryRes.data);
+        let categoryData = null;
+        try {
+          const categoryRes = await getCategoryBySlug(slug);
+          categoryData = categoryRes.data;
+        } catch (err) {
+          const status = err?.response?.status;
+          if (status !== 404) throw err;
+          categoryData = { name: titleFromSlug(slug), description: null };
+        }
 
-        const productsRes = await getCategoryProducts(categoryRes.data.id);
+        if (!mounted) return;
+        setCategory(categoryData);
+
+        const productsRes = await getAllProducts({ category: slug });
         if (!mounted) return;
         setProducts(Array.isArray(productsRes.data) ? productsRes.data : []);
       } catch (err) {

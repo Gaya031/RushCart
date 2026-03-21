@@ -27,6 +27,7 @@ const navByRole = {
     ["/admin/returns", "Return Approval"],
     ["/admin/refunds", "Refund Control"],
     ["/admin/commission-config", "Commission Config"],
+    ["/admin/subscriptions", "Subscription Plans"],
     ["/admin/revenue-analytics", "Revenue Analytics"],
     ["/admin/reports", "Reports & Exports"],
     ["/admin/banners", "Homepage Banners"],
